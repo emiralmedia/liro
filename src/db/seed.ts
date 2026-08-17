@@ -368,6 +368,122 @@ async function seed() {
     ])
     .onConflictDoNothing();
 
+  // A doua lecție a modulului — publicată, dar NEALOCATĂ nimănui. Există ca să
+  // se vadă că biblioteca și parcursul individual sunt lucruri diferite:
+  // profesorul o poate debloca oricând, dar până atunci nu o vede niciun cursant.
+  await db
+    .insert(lessons)
+    .values({
+      id: SEED.lesson2,
+      moduleId: SEED.module,
+      slug: "a1-cunostinta-l2",
+      orderIndex: 2,
+      currentVersionId: SEED.lessonVersion2,
+    })
+    .onConflictDoNothing();
+
+  await db
+    .insert(lessonVersions)
+    .values({
+      id: SEED.lessonVersion2,
+      lessonId: SEED.lesson2,
+      version: 1,
+      status: "published",
+      titleRo: "De unde sunteți?",
+      titleRu: "Откуда Вы?",
+      objectives: [
+        { ro: "Spune de unde este", ru: "Сказать, откуда он/она", competence: "speaking" },
+        { ro: "Folosește prepoziția «din»", ru: "Использовать предлог «din»", competence: "grammar" },
+      ],
+      estimatedMinutes: 60,
+      origin: "human",
+      approvedBy: SEED.teacher,
+      approvedAt: NOW,
+      publishedAt: NOW,
+      createdBy: SEED.teacher,
+    })
+    .onConflictDoNothing();
+
+  await db
+    .insert(sections)
+    .values([
+      {
+        id: SEED.sections2.theory,
+        lessonVersionId: SEED.lessonVersion2,
+        type: "theory",
+        orderIndex: 1,
+        titleRu: "Откуда вы?",
+        body: {
+          ro:
+            "Ca să spunem de unde suntem, folosim prepoziția «din»: «Sunt din Chișinău», " +
+            "«Sunt din Rusia».\n\n" +
+            "Întrebarea politicoasă este «De unde sunteți?», iar între prieteni «De unde ești?».",
+          ru:
+            "Предлог «din» соответствует русскому «из»: «Sunt din Moscova» — «Я из Москвы». " +
+            "Важное отличие: в румынском после «din» название города или страны НЕ меняется — " +
+            "нет падежей, форма всегда одна.",
+        },
+      },
+      {
+        id: SEED.sections2.exercises,
+        lessonVersionId: SEED.lessonVersion2,
+        type: "exercises",
+        orderIndex: 2,
+        titleRu: "Упражнения",
+        body: { ru: "Три задания." },
+      },
+    ])
+    .onConflictDoNothing();
+
+  await db
+    .insert(exercises)
+    .values([
+      {
+        id: SEED.exercises2.fill,
+        sectionId: SEED.sections2.exercises,
+        type: "fill",
+        orderIndex: 1,
+        prompt: { ru: "Дополните: «Sunt ___ Moscova.» (я из Москвы)" },
+        canonicalAnswer: "din",
+        acceptedVariants: [],
+        points: 1,
+        explanationRu: "«din» = «из». После него название города не меняется.",
+        interferenceTags: ["prepozitii"],
+      },
+      {
+        id: SEED.exercises2.mcq,
+        sectionId: SEED.sections2.exercises,
+        type: "mcq",
+        orderIndex: 2,
+        prompt: {
+          ru: "Как вежливо спросить, откуда человек?",
+          options: [
+            { id: "a", text: "De unde ești?" },
+            { id: "b", text: "De unde sunteți?" },
+            { id: "c", text: "Unde mergi?" },
+          ],
+        },
+        canonicalAnswer: "b",
+        acceptedVariants: [],
+        points: 1,
+        explanationRu: "Вежливая форма — на «Вы»: «sunteți».",
+        interferenceTags: ["registru"],
+      },
+      {
+        id: SEED.exercises2.order,
+        sectionId: SEED.sections2.exercises,
+        type: "order",
+        orderIndex: 3,
+        prompt: { ru: "Составьте предложение.", items: ["din", "Sunt", "Chișinău"] },
+        canonicalAnswer: ["Sunt", "din", "Chișinău"],
+        acceptedVariants: [],
+        points: 1,
+        explanationRu: "Порядок: подлежащее опускается, глагол — первым.",
+        interferenceTags: ["ordinea-cuvintelor"],
+      },
+    ])
+    .onConflictDoNothing();
+
   // Anna: lecție deblocată, temă în lucru, cu termen în viitor.
   await db
     .insert(assignments)
@@ -438,7 +554,7 @@ async function seed() {
       set: { startsAt: sql`excluded.starts_at` },
     });
 
-  console.log("Gata: 1 profesor, 3 cursanți, 1 modul A1, 1 lecție publicată, 6 exerciții.");
+  console.log("Gata: 1 profesor, 3 cursanți, 1 modul A1, 2 lecții publicate, 9 exerciții.");
 }
 
 seed()

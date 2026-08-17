@@ -21,7 +21,8 @@
 
   --color-ink: oklch(0.24 0.012 60);
   --color-ink-soft: oklch(0.45 0.011 60);
-  --color-ink-faint: oklch(0.6 0.009 60);
+  /* 0.60 pica pragul de 4.5:1 pe fundal deschis — verificat cu axe. */
+  --color-ink-faint: oklch(0.5 0.011 60);
 
   --color-line: oklch(0.9 0.006 70);
   --color-line-strong: oklch(0.82 0.008 70);
@@ -31,11 +32,11 @@
   --color-accent-hover: oklch(0.39 0.072 195);
   --color-accent-soft: oklch(0.95 0.022 195);
 
-  --color-success: oklch(0.5 0.11 155);
+  --color-success: oklch(0.43 0.1 155);
   --color-success-soft: oklch(0.955 0.03 155);
-  --color-warning: oklch(0.58 0.11 75);
+  --color-warning: oklch(0.45 0.09 70);
   --color-warning-soft: oklch(0.96 0.04 85);
-  --color-danger: oklch(0.52 0.15 25);
+  --color-danger: oklch(0.45 0.14 25);
   --color-danger-soft: oklch(0.96 0.03 25);
 
   --font-sans:

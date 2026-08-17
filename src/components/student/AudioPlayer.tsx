@@ -54,7 +54,7 @@ export function AudioPlayer({
   const totalSeconds = durationMs ? Math.round(durationMs / 1000) : null;
 
   return (
-    <div className="rounded-[--radius-card] border border-[--color-line] bg-[--color-sunken] p-4">
+    <div className="rounded-card border border-line bg-sunken p-4">
       <audio
         ref={audioRef}
         src={src}
@@ -71,7 +71,7 @@ export function AudioPlayer({
           type="button"
           onClick={toggle}
           aria-label={playing ? "Пауза" : "Слушать"}
-          className="inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-[--color-accent] text-white hover:bg-[--color-accent-hover]"
+          className="inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-accent text-white hover:bg-accent-hover"
         >
           {playing ? (
             <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
@@ -88,7 +88,7 @@ export function AudioPlayer({
         <button
           type="button"
           onClick={() => rewind(5)}
-          className="min-h-11 rounded-lg border border-[--color-line-strong] bg-[--color-surface] px-3 text-sm font-medium hover:bg-[--color-sunken]"
+          className="min-h-11 rounded-lg border border-line-strong bg-surface px-3 text-sm font-medium hover:bg-sunken"
         >
           ← 5 сек
         </button>
@@ -102,8 +102,8 @@ export function AudioPlayer({
               aria-pressed={rate === r}
               className={`min-h-11 rounded-lg px-3 text-sm font-medium ${
                 rate === r
-                  ? "bg-[--color-accent-soft] text-[--color-accent]"
-                  : "text-[--color-ink-soft] hover:bg-[--color-surface]"
+                  ? "bg-accent-soft text-accent"
+                  : "text-ink-soft hover:bg-surface"
               }`}
             >
               {r}×
@@ -112,12 +112,12 @@ export function AudioPlayer({
         </div>
 
         {totalSeconds ? (
-          <span className="ml-auto text-sm text-[--color-ink-faint]">{totalSeconds} сек</span>
+          <span className="ml-auto text-sm text-ink-faint">{totalSeconds} сек</span>
         ) : null}
       </div>
 
-      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[--color-line]">
-        <div className="h-full bg-[--color-accent]" style={{ width: `${progress}%` }} />
+      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-line">
+        <div className="h-full bg-accent" style={{ width: `${progress}%` }} />
       </div>
 
       {transcript ? (
@@ -126,16 +126,16 @@ export function AudioPlayer({
             type="button"
             onClick={() => setShowTranscript((v) => !v)}
             aria-expanded={showTranscript}
-            className="min-h-11 text-sm font-medium text-[--color-accent] underline underline-offset-4"
+            className="min-h-11 text-sm font-medium text-accent underline underline-offset-4"
           >
             {showTranscript ? "Скрыть текст" : "Показать текст"}
           </button>
           {showTranscript ? (
-            <p className="prose-lesson mt-2 whitespace-pre-line rounded-lg bg-[--color-surface] p-4">
+            <p className="prose-lesson mt-2 whitespace-pre-line rounded-lg bg-surface p-4">
               {transcript}
             </p>
           ) : (
-            <p className="mt-2 text-sm text-[--color-ink-faint]">
+            <p className="mt-2 text-sm text-ink-faint">
               Сначала послушайте дважды — текст подсказывает ответы.
             </p>
           )}

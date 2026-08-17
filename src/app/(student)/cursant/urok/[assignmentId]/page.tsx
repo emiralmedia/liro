@@ -92,21 +92,21 @@ export default async function LessonPage({
 
   return (
     <article className="pb-16">
-      <a href="/cursant" className="inline-flex min-h-11 items-center text-sm text-[--color-accent]">
+      <a href="/cursant" className="inline-flex min-h-11 items-center text-sm text-accent">
         ← К моим урокам
       </a>
 
-      <header className="mt-2 border-b border-[--color-line] pb-6">
-        <p className="text-sm font-medium uppercase tracking-wide text-[--color-ink-faint]">
+      <header className="mt-2 border-b border-line pb-6">
+        <p className="text-sm font-medium uppercase tracking-wide text-ink-faint">
           Урок · A1
         </p>
         <h1 className="mt-1 text-[1.75rem] font-semibold tracking-tight">{version.titleRu}</h1>
-        <p className="mt-1 text-[--color-ink-soft]">{version.titleRo}</p>
+        <p className="mt-1 text-ink-soft">{version.titleRo}</p>
 
         {version.objectives.length > 0 ? (
-          <div className="mt-5 rounded-[--radius-card] bg-[--color-accent-soft] p-4">
-            <h2 className="text-sm font-semibold text-[--color-accent]">Чему научитесь</h2>
-            <ul className="mt-2 flex flex-col gap-1 text-sm text-[--color-ink]">
+          <div className="mt-5 rounded-card bg-accent-soft p-4">
+            <h2 className="text-sm font-semibold text-accent">Чему научитесь</h2>
+            <ul className="mt-2 flex flex-col gap-1 text-sm text-ink">
               {version.objectives.map((o) => (
                 <li key={o.ru}>• {o.ru}</li>
               ))}
@@ -128,12 +128,12 @@ export default async function LessonPage({
               {section.type === "theory" ? (
                 <div className="mt-3 flex flex-col gap-4">
                   {body.ro ? (
-                    <div className="prose-lesson rounded-[--radius-card] border border-[--color-line] bg-[--color-surface] p-5 whitespace-pre-line">
+                    <div className="prose-lesson rounded-card border border-line bg-surface p-5 whitespace-pre-line">
                       {body.ro}
                     </div>
                   ) : null}
                   {body.ru ? (
-                    <div className="rounded-[--radius-card] border-l-4 border-[--color-accent] bg-[--color-sunken] p-5 whitespace-pre-line text-[--color-ink]">
+                    <div className="rounded-card border-l-4 border-accent bg-sunken p-5 whitespace-pre-line text-ink">
                       {body.ru}
                     </div>
                   ) : null}
@@ -142,13 +142,13 @@ export default async function LessonPage({
 
               {section.type === "vocab" ? (
                 <div className="mt-3">
-                  <ul className="divide-y divide-[--color-line] overflow-hidden rounded-[--radius-card] border border-[--color-line] bg-[--color-surface]">
+                  <ul className="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface">
                     {body.vocabulary?.map((v) => (
                       <li key={v.ro} className="flex items-baseline gap-4 px-5 py-3">
                         <span className="prose-lesson min-w-40 font-medium">{v.ro}</span>
-                        <span className="text-[--color-ink-soft]">{v.ru}</span>
+                        <span className="text-ink-soft">{v.ru}</span>
                         {!v.active ? (
-                          <span className="ml-auto text-xs text-[--color-ink-faint]">пассивно</span>
+                          <span className="ml-auto text-xs text-ink-faint">пассивно</span>
                         ) : null}
                       </li>
                     ))}
@@ -159,12 +159,12 @@ export default async function LessonPage({
                       {body.examples.map((ex) => (
                         <li
                           key={ex.ro}
-                          className="rounded-[--radius-card] border border-[--color-line] bg-[--color-surface] p-4"
+                          className="rounded-card border border-line bg-surface p-4"
                         >
                           <p className="prose-lesson">{ex.ro}</p>
-                          <p className="mt-1 text-sm text-[--color-ink-soft]">{ex.ru}</p>
+                          <p className="mt-1 text-sm text-ink-soft">{ex.ru}</p>
                           {ex.note ? (
-                            <p className="mt-1 text-xs text-[--color-ink-faint]">{ex.note}</p>
+                            <p className="mt-1 text-xs text-ink-faint">{ex.note}</p>
                           ) : null}
                         </li>
                       ))}
@@ -176,7 +176,7 @@ export default async function LessonPage({
               {section.type === "audio" && audio ? (
                 <div className="mt-3">
                   {body.ru ? (
-                    <p className="mb-3 text-[--color-ink-soft]">{body.ru}</p>
+                    <p className="mb-3 text-ink-soft">{body.ru}</p>
                   ) : null}
                   <AudioPlayer
                     src={audio.storageKey}

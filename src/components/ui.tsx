@@ -23,7 +23,7 @@ export function Card({
   return (
     <Tag
       className={cx(
-        "rounded-[--radius-card] border border-[--color-line] bg-[--color-surface] shadow-[--shadow-card]",
+        "rounded-card border border-line bg-surface shadow-card",
         className,
       )}
     >
@@ -51,10 +51,10 @@ export function Button({
     lg: "min-h-13 px-6 text-base",
   };
   const variants = {
-    primary: "bg-[--color-accent] text-white hover:bg-[--color-accent-hover]",
+    primary: "bg-accent text-white hover:bg-accent-hover",
     secondary:
-      "border border-[--color-line-strong] bg-[--color-surface] text-[--color-ink] hover:bg-[--color-sunken]",
-    ghost: "text-[--color-ink-soft] hover:bg-[--color-sunken] hover:text-[--color-ink]",
+      "border border-line-strong bg-surface text-ink hover:bg-sunken",
+    ghost: "text-ink-soft hover:bg-sunken hover:text-ink",
   };
   return <button className={cx(base, sizes[size], variants[variant], className)} {...props} />;
 }
@@ -74,9 +74,9 @@ export function LinkButton({
 }) {
   const sizes = { md: "min-h-11 px-4 text-sm", lg: "min-h-13 px-6 text-base" };
   const variants = {
-    primary: "bg-[--color-accent] text-white hover:bg-[--color-accent-hover]",
+    primary: "bg-accent text-white hover:bg-accent-hover",
     secondary:
-      "border border-[--color-line-strong] bg-[--color-surface] text-[--color-ink] hover:bg-[--color-sunken]",
+      "border border-line-strong bg-surface text-ink hover:bg-sunken",
   };
   return (
     <a
@@ -101,11 +101,11 @@ export function Badge({
   children: ReactNode;
 }) {
   const tones = {
-    neutral: "bg-[--color-sunken] text-[--color-ink-soft]",
-    success: "bg-[--color-success-soft] text-[--color-success]",
-    warning: "bg-[--color-warning-soft] text-[--color-warning]",
-    danger: "bg-[--color-danger-soft] text-[--color-danger]",
-    accent: "bg-[--color-accent-soft] text-[--color-accent]",
+    neutral: "bg-sunken text-ink-soft",
+    success: "bg-success-soft text-success",
+    warning: "bg-warning-soft text-warning",
+    danger: "bg-danger-soft text-danger",
+    accent: "bg-accent-soft text-accent",
   };
   return (
     <span
@@ -136,10 +136,10 @@ export function ProgressBar({
       aria-valuemin={0}
       aria-valuemax={max}
       aria-label={label}
-      className="h-2 w-full overflow-hidden rounded-full bg-[--color-sunken]"
+      className="h-2 w-full overflow-hidden rounded-full bg-sunken"
     >
       <div
-        className="h-full rounded-full bg-[--color-accent] transition-[width]"
+        className="h-full rounded-full bg-accent transition-[width]"
         style={{ width: `${pct}%` }}
       />
     </div>
@@ -156,10 +156,10 @@ export function PageHeading({
   actions?: ReactNode;
 }) {
   return (
-    <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[--color-line] pb-5">
+    <div className="flex flex-wrap items-end justify-between gap-4 border-b border-line pb-5">
       <div>
-        <h1 className="text-[1.75rem] font-semibold tracking-tight text-[--color-ink]">{title}</h1>
-        {subtitle ? <p className="mt-1 text-[--color-ink-soft]">{subtitle}</p> : null}
+        <h1 className="text-[1.75rem] font-semibold tracking-tight text-ink">{title}</h1>
+        {subtitle ? <p className="mt-1 text-ink-soft">{subtitle}</p> : null}
       </div>
       {actions}
     </div>
@@ -168,7 +168,7 @@ export function PageHeading({
 
 export function EmptyState({ children }: { children: ReactNode }) {
   return (
-    <p className="rounded-[--radius-card] border border-dashed border-[--color-line-strong] px-5 py-8 text-center text-[--color-ink-soft]">
+    <p className="rounded-card border border-dashed border-line-strong px-5 py-8 text-center text-ink-soft">
       {children}
     </p>
   );

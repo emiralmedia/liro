@@ -88,13 +88,18 @@ export default async function TeacherToday() {
               <Card
                 as="li"
                 key={r.assignmentId}
-                className="flex flex-wrap items-center gap-3 border-l-4 border-l-[--color-warning] px-5 py-4"
+                className="border-l-4 border-l-warning"
               >
-                <span className="font-medium">{r.name}</span>
-                <span className="text-[--color-ink-soft]">{r.lessonTitle}</span>
-                <span className="ml-auto text-sm text-[--color-warning]">
+                <a
+                  href={`/profesor/cursant/${r.studentId}`}
+                  className="flex flex-wrap items-center gap-3 px-5 py-4 hover:bg-sunken"
+                >
+                <span className="font-medium underline-offset-4 hover:underline">{r.name}</span>
+                <span className="text-ink-soft">{r.lessonTitle}</span>
+                <span className="ml-auto text-sm text-warning">
                   termen depășit {r.dueAt ? relativeDayRo(r.dueAt) : ""}
                 </span>
+                </a>
               </Card>
             ))}
           </ul>
@@ -106,18 +111,19 @@ export default async function TeacherToday() {
           Cursanți
         </h2>
         <Card className="mt-3 overflow-hidden">
-          <ul className="divide-y divide-[--color-line]">
+          <ul className="divide-y divide-line">
             {roster.map((r) => (
-              <li
-                key={r.assignmentId ?? r.studentId}
-                className="flex flex-wrap items-center gap-x-3 gap-y-1 px-5 py-4"
-              >
-                <span className="font-medium">{r.name}</span>
+              <li key={r.assignmentId ?? r.studentId}>
+                <a
+                  href={`/profesor/cursant/${r.studentId}`}
+                  className="flex flex-wrap items-center gap-x-3 gap-y-1 px-5 py-4 hover:bg-sunken"
+                >
+                <span className="font-medium underline-offset-4 hover:underline">{r.name}</span>
                 <Badge>{r.level}</Badge>
                 {r.lessonTitle ? (
-                  <span className="text-sm text-[--color-ink-soft]">{r.lessonTitle}</span>
+                  <span className="text-sm text-ink-soft">{r.lessonTitle}</span>
                 ) : (
-                  <span className="text-sm text-[--color-ink-faint]">nicio lecție alocată</span>
+                  <span className="text-sm text-ink-faint">nicio lecție alocată</span>
                 )}
                 {r.homeworkState ? (
                   <span className="ml-auto flex items-center gap-2">
@@ -125,12 +131,13 @@ export default async function TeacherToday() {
                       {homeworkStateRo[r.homeworkState] ?? r.homeworkState}
                     </Badge>
                     {r.dueAt ? (
-                      <span className="text-sm text-[--color-ink-faint]">
+                      <span className="text-sm text-ink-faint">
                         {relativeDayRo(r.dueAt)}
                       </span>
                     ) : null}
                   </span>
                 ) : null}
+                </a>
               </li>
             ))}
           </ul>
@@ -147,11 +154,11 @@ export default async function TeacherToday() {
           </div>
         ) : (
           <Card className="mt-3 overflow-hidden">
-            <ul className="divide-y divide-[--color-line]">
+            <ul className="divide-y divide-line">
               {upcoming.map((e) => (
                 <li key={e.id} className="flex items-center gap-3 px-5 py-4">
                   <span className="font-medium">{e.name}</span>
-                  <span className="ml-auto text-sm text-[--color-ink-soft]">
+                  <span className="ml-auto text-sm text-ink-soft">
                     {relativeDayRo(e.startsAt)},{" "}
                     {e.startsAt.toLocaleTimeString("ro-RO", {
                       hour: "2-digit",

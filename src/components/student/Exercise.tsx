@@ -85,19 +85,19 @@ export function Exercise({
   const copy = result?.verdict ? VERDICT_COPY[result.verdict] : null;
 
   const toneClasses = {
-    ok: "border-[--color-success] bg-[--color-success-soft] text-[--color-success]",
-    partial: "border-[--color-warning] bg-[--color-warning-soft] text-[--color-warning]",
-    bad: "border-[--color-danger] bg-[--color-danger-soft] text-[--color-danger]",
-    pending: "border-[--color-accent] bg-[--color-accent-soft] text-[--color-accent]",
+    ok: "border-success bg-success-soft text-success",
+    partial: "border-warning bg-warning-soft text-warning",
+    bad: "border-danger bg-danger-soft text-danger",
+    pending: "border-accent bg-accent-soft text-accent",
   };
 
   return (
     <li
       data-testid={`exercise-${exercise.type}`}
-      className="rounded-[--radius-card] border border-[--color-line] bg-[--color-surface] p-5 shadow-[--shadow-card]"
+      className="rounded-card border border-line bg-surface p-5 shadow-card"
     >
       <div className="flex items-start gap-3">
-        <span className="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-[--color-sunken] text-sm font-semibold text-[--color-ink-soft]">
+        <span className="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-sunken text-sm font-semibold text-ink-soft">
           {index + 1}
         </span>
         <p className="font-medium">{exercise.prompt.ru}</p>
@@ -113,8 +113,8 @@ export function Exercise({
                 key={o.id}
                 className={`flex min-h-12 cursor-pointer items-center gap-3 rounded-lg border px-4 ${
                   choice === o.id
-                    ? "border-[--color-accent] bg-[--color-accent-soft]"
-                    : "border-[--color-line] hover:bg-[--color-sunken]"
+                    ? "border-accent bg-accent-soft"
+                    : "border-line hover:bg-sunken"
                 }`}
               >
                 <input
@@ -123,7 +123,7 @@ export function Exercise({
                   value={o.id}
                   checked={choice === o.id}
                   onChange={() => setChoice(o.id)}
-                  className="size-4 accent-[--color-accent]"
+                  className="size-4 accent-accent"
                 />
                 <span>{o.text}</span>
               </label>
@@ -140,7 +140,7 @@ export function Exercise({
             onChange={(e) => setText(e.target.value)}
             aria-label="Ответ"
             autoComplete="off"
-            className="min-h-12 w-full max-w-sm rounded-lg border border-[--color-line-strong] px-4 text-base disabled:bg-[--color-sunken]"
+            className="min-h-12 w-full max-w-sm rounded-lg border border-line-strong px-4 text-base disabled:bg-sunken"
           />
         )}
 
@@ -152,7 +152,7 @@ export function Exercise({
             onChange={(e) => setText(e.target.value)}
             rows={3}
             aria-label="Ответ"
-            className="w-full rounded-lg border border-[--color-line-strong] p-3 text-base disabled:bg-[--color-sunken]"
+            className="w-full rounded-lg border border-line-strong p-3 text-base disabled:bg-sunken"
           />
         )}
 
@@ -161,10 +161,10 @@ export function Exercise({
           <div>
             <div
               aria-label="Ваш вариант"
-              className="flex min-h-14 flex-wrap items-center gap-2 rounded-lg border border-dashed border-[--color-line-strong] p-3"
+              className="flex min-h-14 flex-wrap items-center gap-2 rounded-lg border border-dashed border-line-strong p-3"
             >
               {ordered.length === 0 ? (
-                <span className="text-sm text-[--color-ink-faint]">
+                <span className="text-sm text-ink-faint">
                   Нажимайте слова в нужном порядке
                 </span>
               ) : (
@@ -174,7 +174,7 @@ export function Exercise({
                     type="button"
                     disabled={locked}
                     onClick={() => setOrdered((prev) => prev.filter((_, idx) => idx !== i))}
-                    className="min-h-11 rounded-lg bg-[--color-accent-soft] px-3 text-[--color-accent]"
+                    className="min-h-11 rounded-lg bg-accent-soft px-3 text-accent"
                   >
                     {w}
                   </button>
@@ -188,7 +188,7 @@ export function Exercise({
                   type="button"
                   disabled={locked}
                   onClick={() => setOrdered((prev) => [...prev, w])}
-                  className="min-h-11 rounded-lg border border-[--color-line-strong] px-3 hover:bg-[--color-sunken]"
+                  className="min-h-11 rounded-lg border border-line-strong px-3 hover:bg-sunken"
                 >
                   {w}
                 </button>
@@ -208,7 +208,7 @@ export function Exercise({
                   value={pairs[p.left] ?? ""}
                   aria-label={`Перевод для «${p.left}»`}
                   onChange={(e) => setPairs((prev) => ({ ...prev, [p.left]: e.target.value }))}
-                  className="min-h-12 flex-1 rounded-lg border border-[--color-line-strong] px-3 disabled:bg-[--color-sunken]"
+                  className="min-h-12 flex-1 rounded-lg border border-line-strong px-3 disabled:bg-sunken"
                 >
                   <option value="">— выберите —</option>
                   {exercise.prompt.pairs?.map((o) => (
@@ -227,14 +227,14 @@ export function Exercise({
             type="button"
             onClick={send}
             disabled={pending || isEmpty()}
-            className="mt-4 inline-flex min-h-11 items-center rounded-lg bg-[--color-accent] px-5 text-sm font-medium text-white hover:bg-[--color-accent-hover] disabled:opacity-40"
+            className="mt-4 inline-flex min-h-11 items-center rounded-lg bg-accent px-5 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-40"
           >
             {pending ? "Отправляем…" : "Ответить"}
           </button>
         ) : null}
 
         {result && !result.ok ? (
-          <p role="alert" className="mt-3 text-sm text-[--color-danger]">
+          <p role="alert" className="mt-3 text-sm text-danger">
             {result.error}
           </p>
         ) : null}
@@ -258,7 +258,7 @@ export function Exercise({
               </p>
             ) : null}
             {result?.explanationRu ? (
-              <p className="mt-1 text-sm text-[--color-ink]">{result.explanationRu}</p>
+              <p className="mt-1 text-sm text-ink">{result.explanationRu}</p>
             ) : null}
           </div>
         ) : null}

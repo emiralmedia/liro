@@ -29,8 +29,8 @@ export function ReviewCard({ attempt }: { attempt: PendingAttempt }) {
 
   if (done) {
     return (
-      <li className="rounded-[--radius-card] border border-[--color-success] bg-[--color-success-soft] px-5 py-4">
-        <p className="font-medium text-[--color-success]">
+      <li className="rounded-card border border-success bg-success-soft px-5 py-4">
+        <p className="font-medium text-success">
           Corectat: {attempt.studentName} — {attempt.promptRu}
         </p>
       </li>
@@ -47,28 +47,28 @@ export function ReviewCard({ attempt }: { attempt: PendingAttempt }) {
   }
 
   return (
-    <li className="rounded-[--radius-card] border border-[--color-line] bg-[--color-surface] p-5 shadow-[--shadow-card]">
+    <li className="rounded-card border border-line bg-surface p-5 shadow-card">
       <div className="flex flex-wrap items-baseline gap-2">
         <span className="font-medium">{attempt.studentName}</span>
-        <span className="text-sm text-[--color-ink-faint]">{attempt.exerciseType}</span>
+        <span className="text-sm text-ink-faint">{attempt.exerciseType}</span>
         {attempt.autoConfidence !== null ? (
-          <span className="ml-auto text-xs text-[--color-ink-faint]">
+          <span className="ml-auto text-xs text-ink-faint">
             încredere automată {Math.round(attempt.autoConfidence * 100)}%
           </span>
         ) : null}
       </div>
 
-      <p className="mt-3 text-sm text-[--color-ink-soft]">{attempt.promptRu}</p>
+      <p className="mt-3 text-sm text-ink-soft">{attempt.promptRu}</p>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <div className="rounded-lg border border-[--color-line] bg-[--color-sunken] p-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-[--color-ink-faint]">
+        <div className="rounded-lg border border-line bg-sunken p-4">
+          <p className="text-xs font-medium uppercase tracking-wide text-ink-faint">
             Răspunsul cursantului
           </p>
           <p className="prose-lesson mt-1">{attempt.answer || "(gol)"}</p>
         </div>
-        <div className="rounded-lg border border-[--color-line] p-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-[--color-ink-faint]">
+        <div className="rounded-lg border border-line p-4">
+          <p className="text-xs font-medium uppercase tracking-wide text-ink-faint">
             Răspuns canonic
           </p>
           <p className="prose-lesson mt-1">{attempt.canonicalAnswer}</p>
@@ -81,12 +81,12 @@ export function ReviewCard({ attempt }: { attempt: PendingAttempt }) {
           value={feedback}
           onChange={(e) => setFeedback(e.target.value)}
           rows={2}
-          className="mt-1 w-full rounded-lg border border-[--color-line-strong] p-3 text-sm"
+          className="mt-1 w-full rounded-lg border border-line-strong p-3 text-sm"
         />
       </label>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <span className="text-sm text-[--color-ink-soft]">Punctaj din {attempt.points}:</span>
+        <span className="text-sm text-ink-soft">Punctaj din {attempt.points}:</span>
         {Array.from({ length: attempt.points + 1 }, (_, i) => i).map((v) => (
           <button
             key={v}
@@ -95,18 +95,18 @@ export function ReviewCard({ attempt }: { attempt: PendingAttempt }) {
             onClick={() => save(v)}
             className={`min-h-11 min-w-11 rounded-lg border px-3 font-medium ${
               score === v
-                ? "border-[--color-accent] bg-[--color-accent] text-white"
-                : "border-[--color-line-strong] hover:bg-[--color-sunken]"
+                ? "border-accent bg-accent text-white"
+                : "border-line-strong hover:bg-sunken"
             }`}
           >
             {v}
           </button>
         ))}
-        {pending ? <span className="text-sm text-[--color-ink-faint]">se salvează…</span> : null}
+        {pending ? <span className="text-sm text-ink-faint">se salvează…</span> : null}
       </div>
 
       {error ? (
-        <p role="alert" className="mt-2 text-sm text-[--color-danger]">
+        <p role="alert" className="mt-2 text-sm text-danger">
           {error}
         </p>
       ) : null}

@@ -21,7 +21,7 @@ export default async function TeacherLayout({ children }: { children: React.Reac
 
   return (
     <div lang="ro" className="min-h-screen">
-      <header className="sticky top-0 z-10 border-b border-[--color-line] bg-[--color-surface]/90 backdrop-blur">
+      <header className="sticky top-0 z-10 border-b border-line bg-surface/90 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center gap-6 px-6 py-3">
           <a href="/profesor" className="font-semibold tracking-tight">
             Liro
@@ -29,13 +29,19 @@ export default async function TeacherLayout({ children }: { children: React.Reac
           <nav aria-label="Principal" className="flex items-center gap-1 text-sm">
             <a
               href="/profesor"
-              className="inline-flex min-h-11 items-center rounded-lg px-3 text-[--color-ink-soft] hover:bg-[--color-sunken] hover:text-[--color-ink]"
+              className="inline-flex min-h-11 items-center rounded-lg px-3 text-ink-soft hover:bg-sunken hover:text-ink"
             >
               Astăzi
             </a>
             <a
+              href="/profesor/biblioteca"
+              className="inline-flex min-h-11 items-center rounded-lg px-3 text-ink-soft hover:bg-sunken hover:text-ink"
+            >
+              Bibliotecă
+            </a>
+            <a
               href="/profesor/revizuire"
-              className="inline-flex min-h-11 items-center rounded-lg px-3 text-[--color-ink-soft] hover:bg-[--color-sunken] hover:text-[--color-ink]"
+              className="inline-flex min-h-11 items-center rounded-lg px-3 text-ink-soft hover:bg-sunken hover:text-ink"
             >
               De revizuit
             </a>
@@ -43,7 +49,7 @@ export default async function TeacherLayout({ children }: { children: React.Reac
           <form action={logout} className="ml-auto">
             <button
               type="submit"
-              className="inline-flex min-h-11 items-center rounded-lg px-3 text-sm text-[--color-ink-soft] hover:bg-[--color-sunken]"
+              className="inline-flex min-h-11 items-center rounded-lg px-3 text-sm text-ink-soft hover:bg-sunken"
             >
               Ieșire
             </button>

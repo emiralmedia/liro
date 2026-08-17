@@ -42,6 +42,10 @@ beforeAll(async () => {
     .update(homework)
     .set({ state: "overdue" })
     .where(eq(homework.id, SEED.homework.dmitri));
+
+  // Olga trebuie să fie fără alocări: pe ea se sprijină dovada că blocarea
+  // implicită e reală. Suita E2E îi deblochează una, ca să testeze acțiunea.
+  await db.delete(assignments).where(eq(assignments.studentId, SEED.students.olga));
 });
 
 afterAll(async () => {

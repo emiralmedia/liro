@@ -55,7 +55,7 @@ export default async function ReviewQueue() {
 
   return (
     <>
-      <a href="/profesor" className="inline-flex min-h-11 items-center text-sm text-[--color-accent]">
+      <a href="/profesor" className="inline-flex min-h-11 items-center text-sm text-accent">
         ← Astăzi
       </a>
 

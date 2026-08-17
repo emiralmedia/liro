@@ -33,7 +33,7 @@ export function LessonExercises({
         <h2 id="upr" className="text-lg font-semibold">
           Упражнения
         </h2>
-        <span className="text-sm text-[--color-ink-soft]">
+        <span className="text-sm text-ink-soft">
           {done} из {total}
         </span>
       </div>
@@ -44,10 +44,10 @@ export function LessonExercises({
         aria-valuemin={0}
         aria-valuemax={total}
         aria-label="Прогресс по упражнениям"
-        className="mt-3 h-2 w-full overflow-hidden rounded-full bg-[--color-sunken]"
+        className="mt-3 h-2 w-full overflow-hidden rounded-full bg-sunken"
       >
         <div
-          className="h-full rounded-full bg-[--color-accent] transition-[width] duration-300"
+          className="h-full rounded-full bg-accent transition-[width] duration-300"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -64,14 +64,14 @@ export function LessonExercises({
         ))}
       </ul>
 
-      <div className="mt-8 rounded-[--radius-card] border border-[--color-line] bg-[--color-surface] p-5">
+      <div className="mt-8 rounded-card border border-line bg-surface p-5">
         {submitted ? (
-          <p role="status" className="font-medium text-[--color-success]">
+          <p role="status" className="font-medium text-success">
             Задание отправлено преподавателю.
           </p>
         ) : (
           <>
-            <p className="text-[--color-ink-soft]">
+            <p className="text-ink-soft">
               {done < total
                 ? `Осталось ответить: ${total - done}. Отправить можно и раньше — преподаватель увидит, что сделано.`
                 : "Все упражнения выполнены. Отправьте задание преподавателю."}
@@ -85,7 +85,7 @@ export function LessonExercises({
                   if (r.ok) setSubmitted(true);
                 })
               }
-              className="mt-4 inline-flex min-h-12 items-center rounded-lg bg-[--color-accent] px-6 font-medium text-white hover:bg-[--color-accent-hover] disabled:opacity-40"
+              className="mt-4 inline-flex min-h-12 items-center rounded-lg bg-accent px-6 font-medium text-white hover:bg-accent-hover disabled:opacity-40"
             >
               {pending ? "Отправляем…" : "Отправить задание"}
             </button>

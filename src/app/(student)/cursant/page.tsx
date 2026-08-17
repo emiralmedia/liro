@@ -28,7 +28,7 @@ export default async function StudentHome() {
   const [me] = await db.select().from(students).where(eq(students.userId, actor.userId));
   if (!me) {
     return (
-      <p className="text-[--color-ink-soft]">
+      <p className="text-ink-soft">
         Ваш профиль ещё не настроен. Обратитесь к преподавателю.
       </p>
     );
@@ -81,22 +81,22 @@ export default async function StudentHome() {
       <h1 className="text-[1.75rem] font-semibold tracking-tight">Что делать сейчас</h1>
 
       {current ? (
-        <article className="mt-5 overflow-hidden rounded-[--radius-card] border border-[--color-line] bg-[--color-surface] shadow-[--shadow-card]">
+        <article className="mt-5 overflow-hidden rounded-card border border-line bg-surface shadow-card">
           {overdue.length > 0 ? (
-            <p className="bg-[--color-warning-soft] px-5 py-2 text-sm font-medium text-[--color-warning]">
+            <p className="bg-warning-soft px-5 py-2 text-sm font-medium text-warning">
               Просрочено — сделайте это в первую очередь
             </p>
           ) : null}
 
           <div className="p-5">
-            <p className="text-sm font-medium uppercase tracking-wide text-[--color-ink-faint]">
+            <p className="text-sm font-medium uppercase tracking-wide text-ink-faint">
               Урок · A1
             </p>
             <h2 className="mt-1 text-xl font-semibold">{current.titleRu}</h2>
 
             {progress.total > 0 ? (
               <div className="mt-4">
-                <div className="flex items-baseline justify-between text-sm text-[--color-ink-soft]">
+                <div className="flex items-baseline justify-between text-sm text-ink-soft">
                   <span>Упражнения</span>
                   <span>
                     {progress.done} из {progress.total}
@@ -108,10 +108,10 @@ export default async function StudentHome() {
                   aria-valuemin={0}
                   aria-valuemax={progress.total}
                   aria-label="Прогресс по уроку"
-                  className="mt-2 h-2 overflow-hidden rounded-full bg-[--color-sunken]"
+                  className="mt-2 h-2 overflow-hidden rounded-full bg-sunken"
                 >
                   <div
-                    className="h-full rounded-full bg-[--color-accent]"
+                    className="h-full rounded-full bg-accent"
                     style={{ width: `${pct}%` }}
                   />
                 </div>
@@ -119,10 +119,10 @@ export default async function StudentHome() {
             ) : null}
 
             {current.dueAt ? (
-              <p className="mt-4 text-sm text-[--color-ink-soft]">
+              <p className="mt-4 text-sm text-ink-soft">
                 Срок: {current.dueAt.toLocaleDateString("ru-RU")}
                 {current.homeworkState ? (
-                  <span className="ml-2 text-[--color-ink-faint]">
+                  <span className="ml-2 text-ink-faint">
                     · {homeworkStateRu[current.homeworkState] ?? current.homeworkState}
                   </span>
                 ) : null}
@@ -131,14 +131,14 @@ export default async function StudentHome() {
 
             <a
               href={`/cursant/urok/${current.assignmentId}`}
-              className="mt-5 inline-flex min-h-13 w-full items-center justify-center rounded-lg bg-[--color-accent] px-6 text-base font-medium text-white hover:bg-[--color-accent-hover] sm:w-auto"
+              className="mt-5 inline-flex min-h-13 w-full items-center justify-center rounded-lg bg-accent px-6 text-base font-medium text-white hover:bg-accent-hover sm:w-auto"
             >
               {progress.done === 0 ? "Начать урок" : "Продолжить"}
             </a>
           </div>
         </article>
       ) : (
-        <p className="mt-5 rounded-[--radius-card] border border-dashed border-[--color-line-strong] px-5 py-8 text-center text-[--color-ink-soft]">
+        <p className="mt-5 rounded-card border border-dashed border-line-strong px-5 py-8 text-center text-ink-soft">
           Пока нет открытых уроков. Преподаватель откроет следующий после занятия.
         </p>
       )}
@@ -148,16 +148,16 @@ export default async function StudentHome() {
           <h2 id="vse" className="text-lg font-semibold">
             Все уроки
           </h2>
-          <ul className="mt-3 divide-y divide-[--color-line] overflow-hidden rounded-[--radius-card] border border-[--color-line] bg-[--color-surface]">
+          <ul className="mt-3 divide-y divide-line overflow-hidden rounded-card border border-line bg-surface">
             {tasks.map((t) => (
               <li key={t.assignmentId}>
                 <a
                   href={`/cursant/urok/${t.assignmentId}`}
-                  className="flex min-h-14 items-center gap-3 px-5 py-3 hover:bg-[--color-sunken]"
+                  className="flex min-h-14 items-center gap-3 px-5 py-3 hover:bg-sunken"
                 >
                   <span className="font-medium">{t.titleRu}</span>
                   {t.homeworkState ? (
-                    <span className="ml-auto text-sm text-[--color-ink-faint]">
+                    <span className="ml-auto text-sm text-ink-faint">
                       {homeworkStateRu[t.homeworkState] ?? t.homeworkState}
                     </span>
                   ) : null}
@@ -173,7 +173,7 @@ export default async function StudentHome() {
           Следующее занятие
         </h2>
         {nextMeeting ? (
-          <p className="mt-2 rounded-[--radius-card] border border-[--color-line] bg-[--color-surface] px-5 py-4">
+          <p className="mt-2 rounded-card border border-line bg-surface px-5 py-4">
             {nextMeeting.startsAt.toLocaleString("ru-RU", {
               weekday: "long",
               day: "numeric",
@@ -183,7 +183,7 @@ export default async function StudentHome() {
             })}
           </p>
         ) : (
-          <p className="mt-2 text-[--color-ink-soft]">Занятие ещё не назначено.</p>
+          <p className="mt-2 text-ink-soft">Занятие ещё не назначено.</p>
         )}
       </section>
     </>
