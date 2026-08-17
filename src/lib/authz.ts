@@ -61,15 +61,20 @@ export function isUsable(actor: Actor | null): actor is Actor {
   return actor !== null && actor.isActive;
 }
 
-export function isAdmin(actor: Actor | null): boolean {
+/**
+ * Sunt predicate de tip, nu simple `boolean`: după `if (!isStudent(actor)) return`,
+ * compilatorul știe că `actor` nu mai poate fi `null`. Fără asta, fiecare apelant
+ * ar trebui să repete verificarea de null — și, mai devreme sau mai târziu, ar uita.
+ */
+export function isAdmin(actor: Actor | null): actor is Actor {
   return isUsable(actor) && actor.role === "admin";
 }
 
-export function isTeacher(actor: Actor | null): boolean {
+export function isTeacher(actor: Actor | null): actor is Actor {
   return isUsable(actor) && actor.role === "teacher";
 }
 
-export function isStudent(actor: Actor | null): boolean {
+export function isStudent(actor: Actor | null): actor is Actor {
   return isUsable(actor) && actor.role === "student";
 }
 
