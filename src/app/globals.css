@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+/**
+ * Temă calmă, lizibilă, neinfantilizantă (brief §7).
+ * Contrastul textului principal pe fundal este peste 4.5:1.
+ */
+@theme {
+  --color-brand-50: oklch(0.97 0.02 250);
+  --color-brand-600: oklch(0.52 0.13 250);
+  --color-brand-700: oklch(0.44 0.13 250);
+}
+
+/* Focus vizibil peste tot: profesorul predă din tastatură. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
