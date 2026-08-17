@@ -1,37 +1,49 @@
-import { and, asc, eq, gte } from "drizzle-orm";
+import { and, asc, count, eq, gte } from "drizzle-orm";
+import { Badge, Card, EmptyState, LinkButton, PageHeading } from "@/components/ui";
 import { db } from "@/db";
-import { assignments, homework, scheduleEvents, students, users } from "@/db/schema";
+import {
+  assignments,
+  attempts,
+  homework,
+  lessonVersions,
+  scheduleEvents,
+  students,
+  users,
+} from "@/db/schema";
 import { assertRole } from "@/lib/authz";
+import { homeworkStateRo, homeworkTone, relativeDayRo } from "@/lib/labels";
 import { getActor } from "@/lib/session";
 
 /**
- * Dashboardul „Astăzi" (brief §5): cursanții următori, temele și restanțele.
- *
- * Interogarea filtrează după `students.teacherId = actor.userId` — profesorul
- * nu are cum să vadă un cursant nealocat, indiferent ce ajunge în URL.
+ * Dashboardul „Astăzi" (brief §5): cine urmează, ce e restant, ce cere
+ * revizuire. Interogările filtrează după `students.teacherId` — un cursant
+ * nealocat nu apare, indiferent ce ajunge în URL.
  */
 export default async function TeacherToday() {
   const actor = await getActor();
   assertRole(actor, "teacher", "admin");
 
-  const rows = await db
+  const roster = await db
     .select({
       studentId: students.id,
       name: users.name,
       level: students.currentLevel,
+      assignmentId: assignments.id,
+      lessonTitle: lessonVersions.titleRo,
       homeworkState: homework.state,
       dueAt: homework.dueAt,
     })
     .from(students)
     .innerJoin(users, eq(students.userId, users.id))
     .leftJoin(assignments, eq(assignments.studentId, students.id))
+    .leftJoin(lessonVersions, eq(assignments.lessonVersionId, lessonVersions.id))
     .leftJoin(homework, eq(homework.assignmentId, assignments.id))
     .where(eq(students.teacherId, actor.userId))
     .orderBy(asc(users.name));
 
   const upcoming = await db
     .select({
-      studentId: scheduleEvents.studentId,
+      id: scheduleEvents.id,
       startsAt: scheduleEvents.startsAt,
       name: users.name,
     })
@@ -42,68 +54,114 @@ export default async function TeacherToday() {
     .orderBy(asc(scheduleEvents.startsAt))
     .limit(5);
 
-  const overdue = rows.filter((r) => r.homeworkState === "overdue");
+  const [reviewCount] = await db
+    .select({ n: count() })
+    .from(attempts)
+    .innerJoin(students, eq(attempts.studentId, students.id))
+    .where(and(eq(students.teacherId, actor.userId), eq(attempts.needsReview, true)));
+
+  const overdue = roster.filter((r) => r.homeworkState === "overdue");
+  const pendingReview = reviewCount?.n ?? 0;
 
   return (
     <>
-      <h1 className="text-2xl font-semibold tracking-tight">Astăzi</h1>
+      <PageHeading
+        title="Astăzi"
+        subtitle={`${roster.length} cursanți · ${overdue.length} restanțe`}
+        actions={
+          pendingReview > 0 ? (
+            <LinkButton href="/profesor/revizuire">
+              De revizuit
+              <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs">{pendingReview}</span>
+            </LinkButton>
+          ) : null
+        }
+      />
 
-      <section aria-labelledby="restante" className="mt-8">
-        <h2 id="restante" className="text-lg font-medium">
-          Restanțe
-        </h2>
-        {overdue.length === 0 ? (
-          <p className="mt-2 text-stone-600">Nicio restanță.</p>
-        ) : (
-          <ul className="mt-2 space-y-2">
+      {overdue.length > 0 ? (
+        <section aria-labelledby="restante" className="mt-8">
+          <h2 id="restante" className="text-lg font-semibold">
+            Restanțe
+          </h2>
+          <ul className="mt-3 flex flex-col gap-2">
             {overdue.map((r) => (
-              <li
-                key={r.studentId}
-                className="rounded-md border border-amber-300 bg-amber-50 px-4 py-3"
+              <Card
+                as="li"
+                key={r.assignmentId}
+                className="flex flex-wrap items-center gap-3 border-l-4 border-l-[--color-warning] px-5 py-4"
               >
                 <span className="font-medium">{r.name}</span>
-                <span className="ml-2 text-stone-700">
-                  temă restantă din {r.dueAt?.toLocaleDateString("ro-RO")}
+                <span className="text-[--color-ink-soft]">{r.lessonTitle}</span>
+                <span className="ml-auto text-sm text-[--color-warning]">
+                  termen depășit {r.dueAt ? relativeDayRo(r.dueAt) : ""}
                 </span>
+              </Card>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      <section aria-labelledby="cursanti" className="mt-8">
+        <h2 id="cursanti" className="text-lg font-semibold">
+          Cursanți
+        </h2>
+        <Card className="mt-3 overflow-hidden">
+          <ul className="divide-y divide-[--color-line]">
+            {roster.map((r) => (
+              <li
+                key={r.assignmentId ?? r.studentId}
+                className="flex flex-wrap items-center gap-x-3 gap-y-1 px-5 py-4"
+              >
+                <span className="font-medium">{r.name}</span>
+                <Badge>{r.level}</Badge>
+                {r.lessonTitle ? (
+                  <span className="text-sm text-[--color-ink-soft]">{r.lessonTitle}</span>
+                ) : (
+                  <span className="text-sm text-[--color-ink-faint]">nicio lecție alocată</span>
+                )}
+                {r.homeworkState ? (
+                  <span className="ml-auto flex items-center gap-2">
+                    <Badge tone={homeworkTone[r.homeworkState] ?? "neutral"}>
+                      {homeworkStateRo[r.homeworkState] ?? r.homeworkState}
+                    </Badge>
+                    {r.dueAt ? (
+                      <span className="text-sm text-[--color-ink-faint]">
+                        {relativeDayRo(r.dueAt)}
+                      </span>
+                    ) : null}
+                  </span>
+                ) : null}
               </li>
             ))}
           </ul>
-        )}
-      </section>
-
-      <section aria-labelledby="cursanti" className="mt-8">
-        <h2 id="cursanti" className="text-lg font-medium">
-          Cursanți
-        </h2>
-        <ul className="mt-2 divide-y divide-stone-200 rounded-md border border-stone-200 bg-white">
-          {rows.map((r) => (
-            <li key={`${r.studentId}-${r.dueAt?.toISOString() ?? "none"}`} className="px-4 py-3">
-              <span className="font-medium">{r.name}</span>
-              <span className="ml-2 text-sm text-stone-600">nivel {r.level}</span>
-              {r.homeworkState ? (
-                <span className="ml-2 text-sm text-stone-600">· temă: {r.homeworkState}</span>
-              ) : (
-                <span className="ml-2 text-sm text-stone-500">· nicio lecție alocată</span>
-              )}
-            </li>
-          ))}
-        </ul>
+        </Card>
       </section>
 
       <section aria-labelledby="urmatoarele" className="mt-8">
-        <h2 id="urmatoarele" className="text-lg font-medium">
+        <h2 id="urmatoarele" className="text-lg font-semibold">
           Următoarele întâlniri
         </h2>
         {upcoming.length === 0 ? (
-          <p className="mt-2 text-stone-600">Nicio întâlnire programată.</p>
+          <div className="mt-3">
+            <EmptyState>Nicio întâlnire programată.</EmptyState>
+          </div>
         ) : (
-          <ul className="mt-2 space-y-2">
-            {upcoming.map((e) => (
-              <li key={`${e.studentId}-${e.startsAt.toISOString()}`} className="text-stone-800">
-                {e.name} — {e.startsAt.toLocaleString("ro-RO")}
-              </li>
-            ))}
-          </ul>
+          <Card className="mt-3 overflow-hidden">
+            <ul className="divide-y divide-[--color-line]">
+              {upcoming.map((e) => (
+                <li key={e.id} className="flex items-center gap-3 px-5 py-4">
+                  <span className="font-medium">{e.name}</span>
+                  <span className="ml-auto text-sm text-[--color-ink-soft]">
+                    {relativeDayRo(e.startsAt)},{" "}
+                    {e.startsAt.toLocaleTimeString("ro-RO", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </Card>
         )}
       </section>
     </>

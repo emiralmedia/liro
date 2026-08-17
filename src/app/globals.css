@@ -1,19 +1,81 @@
 @import "tailwindcss";
 
 /**
- * Temă calmă, lizibilă, neinfantilizantă (brief §7).
- * Contrastul textului principal pe fundal este peste 4.5:1.
+ * Sistem vizual Liro.
+ *
+ * Direcția din brief §7: calm, lizibil, accesibil, NEINFANTILIZANT. Cursantul
+ * e un adult care învață o limbă — fără culori stridente, fără emoji-uri, fără
+ * încurajări zgomotoase.
+ *
+ * Două familii de caractere cu roluri diferite: sans pentru interfață (dens,
+ * funcțional) și serif pentru conținutul de citit (teorie, dialoguri, exemple).
+ * Distincția ajută cursantul să vadă dintr-o privire ce e „aplicație" și ce e
+ * „materie de învățat".
  */
+
 @theme {
-  --color-brand-50: oklch(0.97 0.02 250);
-  --color-brand-600: oklch(0.52 0.13 250);
-  --color-brand-700: oklch(0.44 0.13 250);
+  /* Fundal cald, nu gri-albastru: mai puțin obositor la sesiuni lungi. */
+  --color-canvas: oklch(0.985 0.004 85);
+  --color-surface: oklch(1 0 0);
+  --color-sunken: oklch(0.965 0.006 85);
+
+  --color-ink: oklch(0.24 0.012 60);
+  --color-ink-soft: oklch(0.45 0.011 60);
+  --color-ink-faint: oklch(0.6 0.009 60);
+
+  --color-line: oklch(0.9 0.006 70);
+  --color-line-strong: oklch(0.82 0.008 70);
+
+  /* Accent: verde-petrol închis. Serios, bun contrast, fără note infantile. */
+  --color-accent: oklch(0.45 0.072 195);
+  --color-accent-hover: oklch(0.39 0.072 195);
+  --color-accent-soft: oklch(0.95 0.022 195);
+
+  --color-success: oklch(0.5 0.11 155);
+  --color-success-soft: oklch(0.955 0.03 155);
+  --color-warning: oklch(0.58 0.11 75);
+  --color-warning-soft: oklch(0.96 0.04 85);
+  --color-danger: oklch(0.52 0.15 25);
+  --color-danger-soft: oklch(0.96 0.03 25);
+
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  --font-reading: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+
+  --radius-card: 0.75rem;
+  --shadow-card: 0 1px 2px oklch(0.24 0.012 60 / 0.05), 0 1px 3px oklch(0.24 0.012 60 / 0.04);
+  --shadow-lift: 0 4px 12px oklch(0.24 0.012 60 / 0.08);
 }
 
-/* Focus vizibil peste tot: profesorul predă din tastatură. */
-:where(a, button, input, select, textarea, [tabindex]):focus-visible {
-  outline: 2px solid var(--color-brand-600);
+html {
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Focus vizibil peste tot: profesorul predă cu mâinile pe tastatură. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Conținutul didactic se citește, nu se scanează. */
+.prose-lesson {
+  font-family: var(--font-reading);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--color-ink);
+}
+
+.prose-lesson p + p {
+  margin-top: 0.9em;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -22,5 +84,6 @@
   *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

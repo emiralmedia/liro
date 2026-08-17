@@ -27,8 +27,7 @@ test("interfața cursantului este marcată ca fiind în rusă", async ({ page })
 test("cursantul cu temă restantă o vede semnalată prioritar", async ({ page }) => {
   await signIn(page, "dmitri@liro.test");
 
-  const overdue = page.getByRole("region", { name: "Просроченное задание" });
-  await expect(overdue).toBeVisible();
+  await expect(page.getByText("Просрочено — сделайте это в первую очередь")).toBeVisible();
 });
 
 test("un cursant fără lecții alocate nu vede conținut", async ({ page }) => {

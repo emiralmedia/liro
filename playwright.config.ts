@@ -28,7 +28,7 @@ export default defineConfig({
       // Profesorul predă de pe laptop.
       name: "profesor-desktop",
       use: { ...devices["Desktop Chrome"] },
-      testMatch: /.*(profesor|a11y)\.spec\.ts/,
+      testMatch: /.*(profesor|a11y|flux-complet)\.spec\.ts/,
     },
     {
       // Cursantul lucrează de pe telefon.

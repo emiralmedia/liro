@@ -19,11 +19,16 @@ export default async function StudentLayout({ children }: { children: React.Reac
 
   return (
     <div lang="ru" className="min-h-screen">
-      <header className="border-b border-stone-200 bg-white">
-        <div className="mx-auto flex max-w-2xl items-center justify-between px-5 py-4">
-          <span className="font-semibold">Liro</span>
+      <header className="sticky top-0 z-10 border-b border-[--color-line] bg-[--color-surface]/90 backdrop-blur">
+        <div className="mx-auto flex max-w-2xl items-center justify-between px-5 py-3">
+          <a href="/cursant" className="font-semibold tracking-tight">
+            Liro
+          </a>
           <form action={logout}>
-            <button type="submit" className="min-h-11 px-3 text-sm text-stone-600 underline">
+            <button
+              type="submit"
+              className="inline-flex min-h-11 items-center rounded-lg px-3 text-sm text-[--color-ink-soft] hover:bg-[--color-sunken]"
+            >
               Выйти
             </button>
           </form>

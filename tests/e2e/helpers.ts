@@ -28,6 +28,42 @@ export async function clearMagicLinks(): Promise<void> {
 }
 
 /**
+ * Așteaptă ca React să fi atașat handlerele pe un buton.
+ *
+ * Playwright consideră un buton „gata" când e vizibil și activ — dar asta se
+ * întâmplă la randarea de pe server, înainte ca React să hidrateze pagina. Un
+ * click în fereastra aceea nu declanșează nimic și dispare fără urmă: fără
+ * eroare, fără cerere de rețea, fără schimbare în interfață.
+ *
+ * Verificăm direct prezența props-urilor React pe elementul respectiv, în loc
+ * să dormim un număr de milisecunde ales la noroc.
+ */
+export async function waitForHydration(page: Page, name: string): Promise<void> {
+  await page.getByRole("button", { name, exact: true }).waitFor({ state: "visible" });
+
+  await page.waitForFunction(
+    (label) => {
+      const el = Array.from(document.querySelectorAll("button")).find(
+        (b) => b.textContent?.trim() === label,
+      );
+      if (!el) return false;
+      const key = Object.keys(el).find((k) => k.startsWith("__reactProps"));
+      if (!key) return false;
+      const props = (el as unknown as Record<string, { onClick?: unknown }>)[key];
+      return typeof props?.onClick === "function";
+    },
+    name,
+    { timeout: 15_000 },
+  );
+}
+
+/** Așteaptă hidratarea, apoi apasă butonul. */
+export async function clickWhenHydrated(page: Page, name: string): Promise<void> {
+  await waitForHydration(page, name);
+  await page.getByRole("button", { name, exact: true }).click();
+}
+
+/**
  * Autentificare completă prin magic link, exact pe fluxul real: formularul de
  * pe /login, apoi linkul primit. Fără scurtături care ar ocoli Auth.js.
  */

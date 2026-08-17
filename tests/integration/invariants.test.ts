@@ -30,6 +30,18 @@ beforeAll(async () => {
   if (seeded.length === 0) {
     throw new Error("Baza nu e populată. Rulează: pnpm db:migrate && pnpm db:seed");
   }
+
+  // Testele își stabilesc singure precondițiile pe stările pe care le verifică.
+  // Baza e comună cu suita E2E, care lasă tema Annei „trimisă" — a te baza pe
+  // ce a lăsat altcineva în urmă înseamnă eșecuri care depind de ordinea rulării.
+  await db
+    .update(homework)
+    .set({ state: "in_progress", submittedAt: null })
+    .where(eq(homework.id, SEED.homework.anna));
+  await db
+    .update(homework)
+    .set({ state: "overdue" })
+    .where(eq(homework.id, SEED.homework.dmitri));
 });
 
 afterAll(async () => {
@@ -139,20 +151,20 @@ describe("invariantul 1 — versionare imuabilă", () => {
 
 describe("invariantul 3 — profesorul are ultimul cuvânt", () => {
   it("scorul profesorului se păstrează separat de cel automat", async () => {
-    await db.insert(attempts).values({
-      studentId: SEED.students.anna,
-      assignmentId: SEED.assignments.annaLesson1,
-      exerciseId: SEED.exercises.short,
-      answer: { text: "Numele meu este Anna" },
-      autoScore: 0,
-      autoConfidence: 0.3,
-      needsReview: true,
-    });
-
+    // `returning()` ne dă exact rândul inserat. O interogare după alocare ar
+    // putea nimeri altă încercare — testele E2E lasă șase în aceeași alocare.
     const [pending] = await db
-      .select()
-      .from(attempts)
-      .where(eq(attempts.assignmentId, SEED.assignments.annaLesson1));
+      .insert(attempts)
+      .values({
+        studentId: SEED.students.anna,
+        assignmentId: SEED.assignments.annaLesson1,
+        exerciseId: SEED.exercises.short,
+        answer: { text: "Numele meu este Anna" },
+        autoScore: 0,
+        autoConfidence: 0.3,
+        needsReview: true,
+      })
+      .returning();
 
     expect(pending?.needsReview).toBe(true);
     expect(pending?.teacherScore).toBeNull();

@@ -11,6 +11,7 @@
 // Variabilele de mediu vin din flagul --env-file-if-exists din package.json.
 // Nu le încărca aici: în ESM importurile se evaluează înaintea acestui cod,
 // deci ./index ar rula fără DATABASE_URL.
+import { sql } from "drizzle-orm";
 import { db } from "./index";
 import {
   assignments,
@@ -30,8 +31,19 @@ import { SEED } from "./seed-ids";
 
 export { SEED };
 
-/** Ancoră temporală fixă, ca testele pe termene să fie reproductibile. */
-const NOW = new Date("2026-03-02T09:00:00.000Z");
+/**
+ * Ancora temporală este ZIUA CURENTĂ la ora 09:00, nu o dată fixă.
+ *
+ * O ancoră fixă părea mai reproductibilă, dar îmbătrânea: după câteva luni,
+ * „următoarea întâlnire" cădea în trecut și dashboardul arăta gol, deși datele
+ * existau. Testele nu depind de date absolute — verifică stări și relații
+ * (Dmitri restant, Anna în lucru), care rămân stabile.
+ */
+const NOW = (() => {
+  const d = new Date();
+  d.setHours(9, 0, 0, 0);
+  return d;
+})();
 const daysFromNow = (d: number) => new Date(NOW.getTime() + d * 86_400_000);
 
 async function seed() {
@@ -158,8 +170,8 @@ async function seed() {
     .values({
       id: SEED.audio,
       kind: "audio",
-      storageKey: "seed/a1-cunostinta-l1-dialog.mp3",
-      durationMs: 42_000,
+      storageKey: "/media/a1-cunostinta-l1-dialog.m4a",
+      durationMs: 13_600,
       transcript:
         "— Bună ziua! Mă numesc Elena. Dumneavoastră cum vă numiți?\n" +
         "— Bună ziua, doamnă Elena. Eu sunt Andrei. Îmi pare bine.\n" +
@@ -398,7 +410,10 @@ async function seed() {
         dueAt: daysFromNow(-2),
       },
     ])
-    .onConflictDoNothing();
+    .onConflictDoUpdate({
+      target: homework.id,
+      set: { dueAt: sql`excluded.due_at`, state: sql`excluded.state` },
+    });
 
   await db
     .insert(scheduleEvents)
@@ -418,7 +433,10 @@ async function seed() {
         meetUrl: "https://meet.google.com/seed-dmitri",
       },
     ])
-    .onConflictDoNothing();
+    .onConflictDoUpdate({
+      target: scheduleEvents.id,
+      set: { startsAt: sql`excluded.starts_at` },
+    });
 
   console.log("Gata: 1 profesor, 3 cursanți, 1 modul A1, 1 lecție publicată, 6 exerciții.");
 }
