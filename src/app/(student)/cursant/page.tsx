@@ -1,4 +1,5 @@
 import { and, asc, count, eq, gte, ne } from "drizzle-orm";
+import { IconAlert, IconArrowRight, IconCalendar, IconBook } from "@/components/icons";
 import { db } from "@/db";
 import {
   assignments,
@@ -28,9 +29,7 @@ export default async function StudentHome() {
   const [me] = await db.select().from(students).where(eq(students.userId, actor.userId));
   if (!me) {
     return (
-      <p className="text-ink-soft">
-        Ваш профиль ещё не настроен. Обратитесь к преподавателю.
-      </p>
+      <p className="text-ink-soft">Ваш профиль ещё не настроен. Обратитесь к преподавателю.</p>
     );
   }
 
@@ -39,6 +38,7 @@ export default async function StudentHome() {
       assignmentId: assignments.id,
       versionId: assignments.lessonVersionId,
       titleRu: lessonVersions.titleRu,
+      titleRo: lessonVersions.titleRo,
       state: assignments.state,
       homeworkState: homework.state,
       dueAt: homework.dueAt,
@@ -56,7 +56,6 @@ export default async function StudentHome() {
     .orderBy(asc(scheduleEvents.startsAt))
     .limit(1);
 
-  // Progresul pe lecția curentă: câte exerciții au primit deja un răspuns.
   const overdue = tasks.filter((t) => t.homeworkState === "overdue");
   const current = overdue[0] ?? tasks.find((t) => t.homeworkState !== "graded") ?? tasks[0];
 
@@ -75,31 +74,36 @@ export default async function StudentHome() {
   }
 
   const pct = progress.total > 0 ? Math.round((progress.done / progress.total) * 100) : 0;
+  const rest = tasks.filter((t) => t.assignmentId !== current?.assignmentId);
 
   return (
     <>
-      <h1 className="text-[1.75rem] font-semibold tracking-tight">Что делать сейчас</h1>
+      <h1 className="text-3xl font-semibold tracking-tight">Что делать сейчас</h1>
 
       {current ? (
-        <article className="mt-5 overflow-hidden rounded-card border border-line bg-surface shadow-card">
+        <article className="surface-hero mt-5 overflow-hidden rounded-card border border-line shadow-lift">
           {overdue.length > 0 ? (
-            <p className="bg-warning-soft px-5 py-2 text-sm font-medium text-warning">
+            <p className="flex items-center gap-2 bg-warning-soft px-5 py-2.5 text-sm font-medium text-warning">
+              <IconAlert className="size-4" />
               Просрочено — сделайте это в первую очередь
             </p>
           ) : null}
 
-          <div className="p-5">
-            <p className="text-sm font-medium uppercase tracking-wide text-ink-faint">
+          <div className="p-6">
+            <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] text-accent">
+              <IconBook className="size-4" />
               Урок · A1
             </p>
-            <h2 className="mt-1 text-xl font-semibold">{current.titleRu}</h2>
+
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight">{current.titleRu}</h2>
+            <p className="prose-lesson mt-1 text-ink-soft">{current.titleRo}</p>
 
             {progress.total > 0 ? (
-              <div className="mt-4">
-                <div className="flex items-baseline justify-between text-sm text-ink-soft">
-                  <span>Упражнения</span>
-                  <span>
-                    {progress.done} из {progress.total}
+              <div className="mt-6">
+                <div className="flex items-baseline justify-between text-sm">
+                  <span className="text-ink-soft">Упражнения</span>
+                  <span className="font-medium tabular-nums">
+                    {progress.done} / {progress.total}
                   </span>
                 </div>
                 <div
@@ -108,52 +112,51 @@ export default async function StudentHome() {
                   aria-valuemin={0}
                   aria-valuemax={progress.total}
                   aria-label="Прогресс по уроку"
-                  className="mt-2 h-2 overflow-hidden rounded-full bg-sunken"
+                  className="mt-2 h-2.5 overflow-hidden rounded-full bg-sunken"
                 >
                   <div
-                    className="h-full rounded-full bg-accent"
+                    className="h-full rounded-full bg-accent transition-[width] duration-700"
                     style={{ width: `${pct}%` }}
                   />
                 </div>
               </div>
             ) : null}
 
+            <a
+              href={`/cursant/urok/${current.assignmentId}`}
+              className="mt-6 inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-lg bg-accent px-6 text-base font-medium text-white shadow-card transition-all hover:bg-accent-hover active:translate-y-px sm:w-auto"
+            >
+              {progress.done === 0 ? "Начать урок" : "Продолжить"}
+              <IconArrowRight className="size-5" />
+            </a>
+
             {current.dueAt ? (
-              <p className="mt-4 text-sm text-ink-soft">
+              <p className="mt-3 text-sm text-ink-faint">
                 Срок: {current.dueAt.toLocaleDateString("ru-RU")}
                 {current.homeworkState ? (
-                  <span className="ml-2 text-ink-faint">
-                    · {homeworkStateRu[current.homeworkState] ?? current.homeworkState}
-                  </span>
+                  <span> · {homeworkStateRu[current.homeworkState] ?? current.homeworkState}</span>
                 ) : null}
               </p>
             ) : null}
-
-            <a
-              href={`/cursant/urok/${current.assignmentId}`}
-              className="mt-5 inline-flex min-h-13 w-full items-center justify-center rounded-lg bg-accent px-6 text-base font-medium text-white hover:bg-accent-hover sm:w-auto"
-            >
-              {progress.done === 0 ? "Начать урок" : "Продолжить"}
-            </a>
           </div>
         </article>
       ) : (
-        <p className="mt-5 rounded-card border border-dashed border-line-strong px-5 py-8 text-center text-ink-soft">
+        <p className="mt-5 rounded-card border border-dashed border-line-strong bg-surface/60 px-5 py-12 text-center text-ink-soft">
           Пока нет открытых уроков. Преподаватель откроет следующий после занятия.
         </p>
       )}
 
-      {tasks.length > 1 ? (
-        <section aria-labelledby="vse" className="mt-8">
-          <h2 id="vse" className="text-lg font-semibold">
-            Все уроки
+      {rest.length > 0 ? (
+        <section aria-labelledby="vse" className="mt-9">
+          <h2 id="vse" className="mb-3 text-base font-semibold">
+            Другие уроки
           </h2>
-          <ul className="mt-3 divide-y divide-line overflow-hidden rounded-card border border-line bg-surface">
-            {tasks.map((t) => (
+          <ul className="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-card">
+            {rest.map((t) => (
               <li key={t.assignmentId}>
                 <a
                   href={`/cursant/urok/${t.assignmentId}`}
-                  className="flex min-h-14 items-center gap-3 px-5 py-3 hover:bg-sunken"
+                  className="flex min-h-14 items-center gap-3 px-5 py-3.5 transition-colors hover:bg-sunken"
                 >
                   <span className="font-medium">{t.titleRu}</span>
                   {t.homeworkState ? (
@@ -161,6 +164,7 @@ export default async function StudentHome() {
                       {homeworkStateRu[t.homeworkState] ?? t.homeworkState}
                     </span>
                   ) : null}
+                  <IconArrowRight className="size-4 text-ink-faint" />
                 </a>
               </li>
             ))}
@@ -168,12 +172,13 @@ export default async function StudentHome() {
         </section>
       ) : null}
 
-      <section aria-labelledby="vstrecha" className="mt-8">
-        <h2 id="vstrecha" className="text-lg font-semibold">
+      <section aria-labelledby="vstrecha" className="mt-9">
+        <h2 id="vstrecha" className="mb-3 flex items-center gap-2 text-base font-semibold">
+          <IconCalendar className="size-4 text-ink-faint" />
           Следующее занятие
         </h2>
         {nextMeeting ? (
-          <p className="mt-2 rounded-card border border-line bg-surface px-5 py-4">
+          <p className="rounded-card border border-line bg-surface px-5 py-4 shadow-card">
             {nextMeeting.startsAt.toLocaleString("ru-RU", {
               weekday: "long",
               day: "numeric",
@@ -183,7 +188,7 @@ export default async function StudentHome() {
             })}
           </p>
         ) : (
-          <p className="mt-2 text-ink-soft">Занятие ещё не назначено.</p>
+          <p className="text-ink-soft">Занятие ещё не назначено.</p>
         )}
       </section>
     </>

@@ -1,5 +1,6 @@
 import { and, asc, eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
+import { IconArrowRight, IconBook, IconSpeaker } from "@/components/icons";
 import { AudioPlayer } from "@/components/student/AudioPlayer";
 import { LessonExercises } from "@/components/student/LessonExercises";
 import type { ExerciseData } from "@/components/student/Exercise";
@@ -92,23 +93,31 @@ export default async function LessonPage({
 
   return (
     <article className="pb-16">
-      <a href="/cursant" className="inline-flex min-h-11 items-center text-sm text-accent">
-        ← К моим урокам
+      <a
+        href="/cursant"
+        className="inline-flex min-h-11 items-center gap-1.5 text-sm text-accent hover:underline"
+      >
+        <IconArrowRight className="size-4 rotate-180" />
+        К моим урокам
       </a>
 
-      <header className="mt-2 border-b border-line pb-6">
-        <p className="text-sm font-medium uppercase tracking-wide text-ink-faint">
+      <header className="surface-hero mt-2 overflow-hidden rounded-card border border-line p-6 shadow-card">
+        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] text-accent">
+          <IconBook className="size-4" />
           Урок · A1
         </p>
-        <h1 className="mt-1 text-[1.75rem] font-semibold tracking-tight">{version.titleRu}</h1>
-        <p className="mt-1 text-ink-soft">{version.titleRo}</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight">{version.titleRu}</h1>
+        <p className="prose-lesson mt-1 text-ink-soft">{version.titleRo}</p>
 
         {version.objectives.length > 0 ? (
-          <div className="mt-5 rounded-card bg-accent-soft p-4">
+          <div className="mt-6 rounded-lg border border-accent-line bg-surface/70 p-4">
             <h2 className="text-sm font-semibold text-accent">Чему научитесь</h2>
-            <ul className="mt-2 flex flex-col gap-1 text-sm text-ink">
+            <ul className="mt-2.5 flex flex-col gap-1.5 text-sm">
               {version.objectives.map((o) => (
-                <li key={o.ru}>• {o.ru}</li>
+                <li key={o.ru} className="flex gap-2">
+                  <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-accent" />
+                  {o.ru}
+                </li>
               ))}
             </ul>
           </div>
@@ -120,20 +129,26 @@ export default async function LessonPage({
         .map((section) => {
           const body = section.body as SectionBody;
           return (
-            <section key={section.id} className="mt-8" aria-labelledby={`s-${section.id}`}>
-              <h2 id={`s-${section.id}`} className="text-lg font-semibold">
+            <section key={section.id} className="mt-9" aria-labelledby={`s-${section.id}`}>
+              <h2
+                id={`s-${section.id}`}
+                className="flex items-center gap-2 text-base font-semibold"
+              >
+                {section.type === "audio" ? (
+                  <IconSpeaker className="size-4 text-ink-faint" />
+                ) : null}
                 {section.titleRu ?? section.type}
               </h2>
 
               {section.type === "theory" ? (
                 <div className="mt-3 flex flex-col gap-4">
                   {body.ro ? (
-                    <div className="prose-lesson rounded-card border border-line bg-surface p-5 whitespace-pre-line">
+                    <div className="prose-lesson surface-quiet rounded-card border border-line p-6 whitespace-pre-line shadow-card">
                       {body.ro}
                     </div>
                   ) : null}
                   {body.ru ? (
-                    <div className="rounded-card border-l-4 border-accent bg-sunken p-5 whitespace-pre-line text-ink">
+                    <div className="rounded-card border border-line border-l-4 border-l-accent bg-sunken p-5 whitespace-pre-line text-ink-soft">
                       {body.ru}
                     </div>
                   ) : null}
@@ -142,10 +157,10 @@ export default async function LessonPage({
 
               {section.type === "vocab" ? (
                 <div className="mt-3">
-                  <ul className="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface">
+                  <ul className="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-card">
                     {body.vocabulary?.map((v) => (
-                      <li key={v.ro} className="flex items-baseline gap-4 px-5 py-3">
-                        <span className="prose-lesson min-w-40 font-medium">{v.ro}</span>
+                      <li key={v.ro} className="flex items-baseline gap-4 px-5 py-3.5">
+                        <span className="prose-lesson min-w-40 font-medium text-ink">{v.ro}</span>
                         <span className="text-ink-soft">{v.ru}</span>
                         {!v.active ? (
                           <span className="ml-auto text-xs text-ink-faint">пассивно</span>
