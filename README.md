@@ -14,19 +14,36 @@ Auth.js v5 · Tailwind + shadcn/ui · next-intl · Vitest + Playwright · Claude
 ## Cerințe
 
 - **Node.js ≥ 20.11** și **pnpm 9** (`corepack enable pnpm`)
-- O bază Postgres (Neon în cloud sau `postgres:16` local prin Docker)
+- Postgres — vezi mai jos; nu ai nevoie de Docker
 
 ## Pornire
 
 ```bash
 pnpm install
-cp .env.example .env.local        # completează DATABASE_URL și AUTH_SECRET
+cp .env.example .env.local        # completează AUTH_SECRET (openssl rand -base64 32)
+pnpm db:local start               # Postgres local pe portul 5433
 pnpm db:migrate
-pnpm db:seed                      # seed determinist: 1 profesor, 3 cursanți, un modul A1
+pnpm db:seed                      # 1 profesor, 3 cursanți, un modul A1 complet
 pnpm dev
 ```
 
-`AUTH_SECRET` se generează cu `openssl rand -base64 32`.
+### Baza de date locală
+
+`pnpm db:local` pornește un Postgres 18 din binarele arm64 aduse de pachetul
+`embedded-postgres` — fără Docker, fără `sudo`, fără instalare în sistem. Datele
+stau în `.tools/pgdata`, care e gitignorat.
+
+| Comandă | Ce face |
+|---|---|
+| `pnpm db:local start` | Inițializează la prima rulare și pornește serverul |
+| `pnpm db:local stop` | Oprește serverul |
+| `pnpm db:local status` | Spune dacă rulează |
+| `pnpm db:local reset` | Șterge datele și repornește de la zero |
+| `pnpm db:local tables` | Listează tabelele |
+| `pnpm db:local sql "<query>"` | Rulează o interogare |
+
+Pentru producție, `DATABASE_URL` indică spre Neon; nimic din cod nu depinde de
+baza locală.
 
 ## Comenzi
 

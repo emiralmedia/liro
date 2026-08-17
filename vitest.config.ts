@@ -1,5 +1,13 @@
-import { defineConfig } from "vitest/config";
+import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { defineConfig } from "vitest/config";
+
+// Testele de integrare au nevoie de DATABASE_URL. Fișierul de configurare se
+// evaluează înaintea testelor, deci aici încărcarea e la timp. În CI
+// variabilele vin din mediu, așa că îl citim doar dacă există.
+if (existsSync(".env.local")) {
+  process.loadEnvFile(".env.local");
+}
 
 export default defineConfig({
   resolve: {
