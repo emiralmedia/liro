@@ -78,30 +78,32 @@ export default async function StudentHome() {
 
   return (
     <>
-      <h1 className="text-3xl font-semibold tracking-tight">Что делать сейчас</h1>
+      <p className="text-xs font-semibold uppercase tracking-[0.13em] text-accent">Ваш маршрут</p>
+      <h1 className="mt-1 text-4xl font-semibold leading-tight">Что делать сейчас</h1>
+      <p className="mt-2 text-ink-soft">Один понятный шаг — и вы ближе к свободной речи.</p>
 
       {current ? (
-        <article className="surface-hero mt-5 overflow-hidden rounded-card border border-line shadow-lift">
+        <article className="surface-dark dot-grid relative mt-6 overflow-hidden rounded-[1.5rem] text-white shadow-lift">
           {overdue.length > 0 ? (
-            <p className="flex items-center gap-2 bg-warning-soft px-5 py-2.5 text-sm font-medium text-warning">
+            <p className="flex items-center gap-2 bg-coral px-5 py-2.5 text-sm font-medium text-white">
               <IconAlert className="size-4" />
               Просрочено — сделайте это в первую очередь
             </p>
           ) : null}
 
           <div className="p-6">
-            <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] text-accent">
+            <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-white/55">
               <IconBook className="size-4" />
               Урок · A1
             </p>
 
             <h2 className="mt-2 text-2xl font-semibold tracking-tight">{current.titleRu}</h2>
-            <p className="prose-lesson mt-1 text-ink-soft">{current.titleRo}</p>
+            <p className="prose-lesson mt-1 text-white/65">{current.titleRo}</p>
 
             {progress.total > 0 ? (
               <div className="mt-6">
                 <div className="flex items-baseline justify-between text-sm">
-                  <span className="text-ink-soft">Упражнения</span>
+                  <span className="text-white/60">Упражнения</span>
                   <span className="font-medium tabular-nums">
                     {progress.done} / {progress.total}
                   </span>
@@ -112,10 +114,10 @@ export default async function StudentHome() {
                   aria-valuemin={0}
                   aria-valuemax={progress.total}
                   aria-label="Прогресс по уроку"
-                  className="mt-2 h-2.5 overflow-hidden rounded-full bg-sunken"
+                  className="mt-2 h-2.5 overflow-hidden rounded-full bg-white/10"
                 >
                   <div
-                    className="h-full rounded-full bg-accent transition-[width] duration-700"
+                    className="h-full rounded-full bg-coral transition-[width] duration-700"
                     style={{ width: `${pct}%` }}
                   />
                 </div>
@@ -124,14 +126,14 @@ export default async function StudentHome() {
 
             <a
               href={`/cursant/urok/${current.assignmentId}`}
-              className="mt-6 inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-lg bg-accent px-6 text-base font-medium text-white shadow-card transition-all hover:bg-accent-hover active:translate-y-px sm:w-auto"
+              className="mt-6 inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-xl bg-white px-6 text-base font-semibold text-accent-deep shadow-card transition-all hover:-translate-y-0.5 active:translate-y-px sm:w-auto"
             >
               {progress.done === 0 ? "Начать урок" : "Продолжить"}
               <IconArrowRight className="size-5" />
             </a>
 
             {current.dueAt ? (
-              <p className="mt-3 text-sm text-ink-faint">
+              <p className="mt-3 text-sm text-white/50">
                 Срок: {current.dueAt.toLocaleDateString("ru-RU")}
                 {current.homeworkState ? (
                   <span> · {homeworkStateRu[current.homeworkState] ?? current.homeworkState}</span>
@@ -147,17 +149,17 @@ export default async function StudentHome() {
       )}
 
       {rest.length > 0 ? (
-        <section aria-labelledby="vse" className="mt-9">
-          <h2 id="vse" className="mb-3 text-base font-semibold">
-            Другие уроки
-          </h2>
+        <section aria-labelledby="vse" className="mt-10">
+          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-ink-faint">Дальше по маршруту</p>
+          <h2 id="vse" className="mb-3 mt-1 text-xl font-semibold">Другие уроки</h2>
           <ul className="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-card">
-            {rest.map((t) => (
+            {rest.map((t, index) => (
               <li key={t.assignmentId}>
                 <a
                   href={`/cursant/urok/${t.assignmentId}`}
                   className="flex min-h-14 items-center gap-3 px-5 py-3.5 transition-colors hover:bg-sunken"
                 >
+                  <span className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-accent-soft text-xs font-semibold text-accent">{index + 2}</span>
                   <span className="font-medium">{t.titleRu}</span>
                   {t.homeworkState ? (
                     <span className="ml-auto text-sm text-ink-faint">

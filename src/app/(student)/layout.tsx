@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { signOut } from "@/lib/auth";
 import { isStudent } from "@/lib/authz";
 import { getActor } from "@/lib/session";
+import { Brand } from "@/components/ui";
 
 /**
  * Poarta spațiului cursantului. Interfața este integral în rusă (brief §2).
@@ -19,11 +20,9 @@ export default async function StudentLayout({ children }: { children: React.Reac
 
   return (
     <div lang="ru" className="min-h-screen">
-      <header className="sticky top-0 z-10 border-b border-line bg-surface/90 backdrop-blur">
+      <header className="sticky top-0 z-10 border-b border-line/70 bg-canvas/85 backdrop-blur-xl">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-5 py-3">
-          <a href="/cursant" className="font-semibold tracking-tight">
-            Liro
-          </a>
+          <a href="/cursant"><Brand /></a>
           <form action={logout}>
             <button
               type="submit"
@@ -34,7 +33,7 @@ export default async function StudentLayout({ children }: { children: React.Reac
           </form>
         </div>
       </header>
-      <main className="mx-auto max-w-2xl px-5 py-6">{children}</main>
+      <main className="mx-auto max-w-2xl px-5 py-8 sm:py-10">{children}</main>
     </div>
   );
 }

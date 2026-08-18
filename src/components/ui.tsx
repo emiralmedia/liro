@@ -11,6 +11,18 @@ function cx(...parts: Array<string | false | null | undefined>): string {
   return parts.filter(Boolean).join(" ");
 }
 
+export function Brand({ compact = false }: { compact?: boolean }) {
+  return (
+    <span className="inline-flex items-center gap-2.5" aria-label="Liro">
+      <span className="relative inline-flex size-9 items-center justify-center overflow-hidden rounded-xl bg-accent text-white shadow-card">
+        <span className="font-reading text-xl font-semibold italic leading-none">L</span>
+        <span className="absolute -bottom-2 -right-2 size-5 rounded-full bg-coral" />
+      </span>
+      {!compact ? <span className="text-lg font-semibold tracking-[-0.04em]">liro</span> : null}
+    </span>
+  );
+}
+
 export function Card({
   children,
   className,
@@ -220,12 +232,12 @@ export function PageHeading({
   eyebrow?: string;
 }) {
   return (
-    <div className="flex flex-wrap items-end justify-between gap-4">
+    <div className="flex flex-wrap items-end justify-between gap-5">
       <div>
         {eyebrow ? (
           <p className="text-xs font-semibold uppercase tracking-[0.08em] text-accent">{eyebrow}</p>
         ) : null}
-        <h1 className="mt-1 text-3xl font-semibold tracking-tight text-ink">{title}</h1>
+        <h1 className="mt-1 text-4xl font-semibold leading-tight text-ink">{title}</h1>
         {subtitle ? <p className="mt-1.5 text-ink-soft">{subtitle}</p> : null}
       </div>
       {actions}

@@ -1,5 +1,5 @@
 import { asc, eq } from "drizzle-orm";
-import { Badge, Card, EmptyState, PageHeading } from "@/components/ui";
+import { Badge, EmptyState, PageHeading } from "@/components/ui";
 import { db } from "@/db";
 import { exercises, lessonVersions, lessons, modules, sections } from "@/db/schema";
 import { assertRole } from "@/lib/authz";
@@ -61,6 +61,13 @@ export default async function Library() {
         subtitle={`${byModule.size} module · ${rows.length} versiuni de lecție`}
       />
 
+      <div className="mt-7 flex flex-wrap items-center gap-2 rounded-card border border-line bg-surface p-2 shadow-card">
+        {(["Toate", "A1", "A2", "B1"] as const).map((level, index) => (
+          <span key={level} className={`inline-flex min-h-10 items-center rounded-xl px-4 text-sm font-medium ${index === 0 ? "bg-accent text-white" : "text-ink-soft"}`}>{level}</span>
+        ))}
+        <span className="ml-auto hidden text-sm text-ink-faint sm:block">Curriculum română pentru rusofoni</span>
+      </div>
+
       {rows.length === 0 ? (
         <div className="mt-8">
           <EmptyState>Biblioteca este goală.</EmptyState>
@@ -79,17 +86,13 @@ export default async function Library() {
                   <span className="text-sm text-ink-faint">{head.moduleTitleRu}</span>
                 </div>
 
-                <Card className="mt-3 overflow-hidden">
-                  <ul className="divide-y divide-line">
+                <div className="mt-4">
+                  <ul className="grid gap-4 md:grid-cols-2">
                     {group.map((l) => (
-                      <li key={l.versionId} className="flex flex-wrap items-center gap-3 px-5 py-4">
-                        <span className="font-medium">{l.titleRo}</span>
-                        <span className="text-sm text-ink-soft">{l.titleRu}</span>
-                        <span className="text-sm text-ink-faint">
-                          v{l.versionNumber} · {exercisesPerVersion.get(l.versionId) ?? 0} exerciții
-                          · {l.minutes} min
-                        </span>
-                        <span className="ml-auto flex items-center gap-2">
+                      <li key={l.versionId} className="group rounded-card border border-line bg-surface p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-lift">
+                        <div className="flex items-start justify-between gap-3">
+                          <span className="inline-flex size-10 items-center justify-center rounded-xl bg-accent-soft font-reading text-lg font-semibold text-accent">{l.lessonOrder}</span>
+                          <span className="flex items-center gap-2">
                           {l.origin !== "human" ? (
                             <Badge tone={l.approvedBy ? "success" : "warning"}>
                               {l.approvedBy ? "AI, validat" : "AI, nevalidat"}
@@ -98,11 +101,18 @@ export default async function Library() {
                           <Badge tone={l.status === "published" ? "success" : "neutral"}>
                             {l.status === "published" ? "publicată" : l.status}
                           </Badge>
-                        </span>
+                          </span>
+                        </div>
+                        <h3 className="mt-5 text-lg font-semibold">{l.titleRo}</h3>
+                        <p className="mt-1 text-sm text-ink-soft">{l.titleRu}</p>
+                        <div className="mt-5 flex items-center gap-3 border-t border-line pt-4 text-xs text-ink-faint">
+                          <span>{exercisesPerVersion.get(l.versionId) ?? 0} exerciții</span>
+                          <span>·</span><span>{l.minutes} min</span><span>·</span><span>v{l.versionNumber}</span>
+                        </div>
                       </li>
                     ))}
                   </ul>
-                </Card>
+                </div>
               </section>
             );
           })}

@@ -94,13 +94,13 @@ export function Exercise({
   return (
     <li
       data-testid={`exercise-${exercise.type}`}
-      className="rounded-card border border-line bg-surface p-5 shadow-card"
+      className="rounded-card border border-line bg-surface p-5 shadow-card sm:p-6"
     >
       <div className="flex items-start gap-3">
-        <span className="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-sunken text-sm font-semibold text-ink-soft">
+        <span className="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-accent-soft text-sm font-semibold text-accent">
           {index + 1}
         </span>
-        <p className="font-medium">{exercise.prompt.ru}</p>
+        <p className="pt-1 font-semibold">{exercise.prompt.ru}</p>
       </div>
 
       <div className="mt-4 pl-10">

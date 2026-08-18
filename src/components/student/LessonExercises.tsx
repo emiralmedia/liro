@@ -28,9 +28,9 @@ export function LessonExercises({
   const pct = total > 0 ? Math.round((done / total) * 100) : 0;
 
   return (
-    <section aria-labelledby="upr" className="mt-10">
+    <section aria-labelledby="upr" className="mt-14 scroll-mt-32">
       <div className="flex items-baseline justify-between">
-        <h2 id="upr" className="text-lg font-semibold">
+        <h2 id="upr" className="text-2xl font-semibold">
           Упражнения
         </h2>
         <span className="text-sm text-ink-soft">

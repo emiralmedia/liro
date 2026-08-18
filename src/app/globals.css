@@ -17,25 +17,27 @@
  */
 
 @theme {
-  /* Fundal cald, nu gri-albastru: mai puțin obositor la sesiuni lungi. */
-  --color-canvas: oklch(0.982 0.005 85);
+  --color-canvas: oklch(0.975 0.012 88);
   --color-surface: oklch(1 0 0);
-  --color-sunken: oklch(0.965 0.007 85);
+  --color-sunken: oklch(0.952 0.015 88);
 
   --color-ink: oklch(0.22 0.014 60);
   --color-ink-soft: oklch(0.45 0.011 60);
   /* 0.60 pica pragul de 4.5:1 pe fundal deschis — verificat cu axe. */
   --color-ink-faint: oklch(0.5 0.011 60);
 
-  --color-line: oklch(0.905 0.006 70);
-  --color-line-strong: oklch(0.83 0.008 70);
+  --color-line: oklch(0.89 0.014 80);
+  --color-line-strong: oklch(0.79 0.018 75);
 
   /* Accent: verde-petrol închis. Serios, bun contrast, fără note infantile. */
-  --color-accent: oklch(0.46 0.085 195);
-  --color-accent-hover: oklch(0.39 0.085 195);
-  --color-accent-deep: oklch(0.32 0.07 200);
-  --color-accent-soft: oklch(0.955 0.026 195);
-  --color-accent-line: oklch(0.87 0.05 195);
+  --color-accent: oklch(0.43 0.09 188);
+  --color-accent-hover: oklch(0.36 0.085 188);
+  --color-accent-deep: oklch(0.27 0.055 190);
+  --color-accent-soft: oklch(0.94 0.045 181);
+  --color-accent-line: oklch(0.82 0.07 181);
+  --color-coral: oklch(0.68 0.13 38);
+  --color-coral-soft: oklch(0.95 0.035 38);
+  --color-night: oklch(0.24 0.035 188);
 
   --color-success: oklch(0.43 0.1 155);
   --color-success-soft: oklch(0.955 0.03 155);
@@ -49,12 +51,12 @@
     sans-serif;
   --font-reading: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
 
-  --radius-card: 0.875rem;
+  --radius-card: 1.125rem;
 
   /* Umbre în două straturi: una strânsă pentru contur, una difuză pentru
      ridicare. O singură umbră arată fie tăiată, fie murdară. */
-  --shadow-card: 0 1px 2px oklch(0.22 0.014 60 / 0.04), 0 2px 8px oklch(0.22 0.014 60 / 0.05);
-  --shadow-lift: 0 2px 4px oklch(0.22 0.014 60 / 0.05), 0 12px 28px oklch(0.22 0.014 60 / 0.09);
+  --shadow-card: 0 1px 2px oklch(0.22 0.014 60 / 0.035), 0 8px 24px oklch(0.22 0.014 60 / 0.045);
+  --shadow-lift: 0 2px 6px oklch(0.22 0.014 60 / 0.05), 0 22px 54px oklch(0.22 0.014 60 / 0.11);
 }
 
 html {
@@ -63,6 +65,7 @@ html {
 
 body {
   background-color: var(--color-canvas);
+  background-image: radial-gradient(circle at 20% -10%, oklch(1 0 0 / .9), transparent 32rem);
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -73,7 +76,7 @@ body {
    le face să pară moi. */
 h1,
 h2 {
-  letter-spacing: -0.018em;
+  letter-spacing: -0.035em;
 }
 
 /* Focus vizibil peste tot: profesorul predă cu mâinile pe tastatură. */
@@ -107,8 +110,25 @@ h2 {
 /* Banda de antet a paginilor cursantului — dă profunzime fără să ceară imagini. */
 .surface-hero {
   background-image:
-    radial-gradient(120% 140% at 0% 0%, oklch(0.96 0.03 195) 0%, transparent 55%),
-    linear-gradient(to bottom right, oklch(1 0 0), oklch(0.985 0.008 85));
+    radial-gradient(100% 140% at 0% 0%, oklch(0.9 0.075 181) 0%, transparent 58%),
+    linear-gradient(135deg, oklch(1 0 0), oklch(0.965 0.025 88));
+}
+
+.surface-dark {
+  background-color: var(--color-night);
+  background-image:
+    radial-gradient(circle at 90% 10%, oklch(0.52 0.09 181 / .7), transparent 18rem),
+    radial-gradient(circle at 20% 110%, oklch(0.38 0.07 215 / .8), transparent 22rem);
+}
+
+.dot-grid {
+  background-image: radial-gradient(oklch(1 0 0 / .16) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-deep);
 }
 
 @media (prefers-reduced-motion: reduce) {

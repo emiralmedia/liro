@@ -5,7 +5,7 @@ import {
   UnlockLesson,
   type UnlockableLesson,
 } from "@/components/teacher/StudentActions";
-import { Badge, Card, EmptyState, PageHeading } from "@/components/ui";
+import { Avatar, Badge, Card, EmptyState } from "@/components/ui";
 import { db } from "@/db";
 import {
   assignments,
@@ -126,21 +126,21 @@ export default async function StudentDetail({
         ← Astăzi
       </a>
 
-      <PageHeading
-        title={row.name ?? row.email}
-        subtitle={`Nivel ${row.level} · ${allocated.length} lecții alocate${
-          pending > 0 ? ` · ${pending} de revizuit` : ""
-        }`}
-      />
-
-      <section aria-labelledby="deblocare" className="mt-8">
-        <h2 id="deblocare" className="text-lg font-semibold">
-          Deblochează o lecție
-        </h2>
-        <Card className="mt-3 p-5">
-          <UnlockLesson studentId={studentId} lessons={unlockable} />
-        </Card>
-      </section>
+      <header className="surface-dark dot-grid relative overflow-hidden rounded-[1.5rem] p-6 text-white shadow-lift sm:p-8">
+        <div className="flex flex-wrap items-center gap-5">
+          <Avatar name={row.name} className="size-16 bg-white/10 text-xl text-white ring-white/20" />
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/55">Cursant · nivel {row.level}</p>
+            <h1 className="mt-1 text-3xl font-semibold">{row.name ?? row.email}</h1>
+            <p className="mt-1 text-sm text-white/60">{row.email}</p>
+          </div>
+        </div>
+        <dl className="mt-7 grid max-w-2xl grid-cols-3 gap-3 border-t border-white/10 pt-5">
+          <div><dt className="text-xs text-white/50">Lecții</dt><dd className="mt-1 text-2xl font-semibold">{allocated.length}</dd></div>
+          <div><dt className="text-xs text-white/50">Punctaj</dt><dd className="mt-1 text-2xl font-semibold">{totalPoints ? `${Math.round((earned / totalPoints) * 100)}%` : "—"}</dd></div>
+          <div><dt className="text-xs text-white/50">De revizuit</dt><dd className="mt-1 text-2xl font-semibold">{pending}</dd></div>
+        </dl>
+      </header>
 
       <section aria-labelledby="alocate" className="mt-8">
         <h2 id="alocate" className="text-lg font-semibold">
@@ -174,6 +174,18 @@ export default async function StudentDetail({
             </ul>
           </Card>
         )}
+      </section>
+
+      <section aria-labelledby="deblocare" className="mt-8">
+        <div className="flex items-baseline justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.1em] text-accent">Pasul următor</p>
+            <h2 id="deblocare" className="mt-1 text-xl font-semibold">Alege următoarea lecție</h2>
+          </div>
+        </div>
+        <Card className="mt-3 border-accent-line bg-accent-soft/40 p-5">
+          <UnlockLesson studentId={studentId} lessons={unlockable} />
+        </Card>
       </section>
 
       <section aria-labelledby="raspunsuri" className="mt-8">

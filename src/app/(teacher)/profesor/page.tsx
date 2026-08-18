@@ -60,7 +60,7 @@ export default async function TeacherToday() {
     .orderBy(asc(users.name));
 
   const upcoming = await db
-    .select({ id: scheduleEvents.id, startsAt: scheduleEvents.startsAt, name: users.name })
+    .select({ id: scheduleEvents.id, startsAt: scheduleEvents.startsAt, name: users.name, studentId: students.id })
     .from(scheduleEvents)
     .innerJoin(students, eq(scheduleEvents.studentId, students.id))
     .innerJoin(users, eq(students.userId, users.id))
@@ -130,9 +130,31 @@ export default async function TeacherToday() {
 
   return (
     <>
-      <PageHeading eyebrow={today} title="Astăzi" subtitle={`${uniqueStudents} cursanți`} />
+      <PageHeading eyebrow={today} title="Bună dimineața" subtitle="Ai tot ce contează pentru ziua de azi într-un singur loc." />
 
-      <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {next ? (
+        <section className="surface-dark dot-grid relative mt-8 overflow-hidden rounded-[1.5rem] p-6 text-white shadow-lift sm:p-8">
+          <div className="relative z-10 max-w-xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">Următoarea lecție</p>
+            <div className="mt-5 flex items-center gap-4">
+              <Avatar name={next.name} className="size-12 bg-white/10 text-base text-white ring-white/20" />
+              <div>
+                <h2 className="text-2xl font-semibold tracking-tight">{next.name}</h2>
+                <p className="mt-1 text-white/65">
+                  {relativeDayRo(next.startsAt)}, {next.startsAt.toLocaleTimeString("ro-RO", { hour: "2-digit", minute: "2-digit" })}
+                </p>
+              </div>
+            </div>
+            <a href={`/profesor/cursant/${next.studentId}`} className="mt-7 inline-flex min-h-12 items-center gap-2 rounded-xl bg-white px-5 font-semibold text-accent-deep shadow-card transition-transform hover:-translate-y-0.5">
+              Pregătește lecția <IconArrowRight className="size-4" />
+            </a>
+          </div>
+          <div aria-hidden className="absolute -bottom-14 -right-8 size-52 rounded-full border border-white/10" />
+          <div aria-hidden className="absolute -bottom-2 right-10 size-28 rounded-full border border-white/10" />
+        </section>
+      ) : null}
+
+      <div className="mt-6 grid grid-cols-3 gap-3">
         <Stat icon={<IconUsers />} value={uniqueStudents} label="cursanți activi" />
         <Stat
           icon={<IconAlert />}
@@ -146,11 +168,6 @@ export default async function TeacherToday() {
           label="de revizuit"
           tone={pendingReview > 0 ? "accent" : "neutral"}
           href={pendingReview > 0 ? "/profesor/revizuire" : undefined}
-        />
-        <Stat
-          icon={<IconCalendar />}
-          value={next ? relativeDayRo(next.startsAt) : "—"}
-          label={next?.name ?? "nicio întâlnire"}
         />
       </div>
 
@@ -292,7 +309,7 @@ function Stat({
     </>
   );
 
-  const shell = `rounded-card border p-5 shadow-card ${shells[tone]}`;
+  const shell = `rounded-card border p-4 sm:p-5 ${shells[tone]}`;
 
   return href ? (
     <a href={href} className={`${shell} block transition-shadow hover:shadow-lift`}>
