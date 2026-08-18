@@ -1,0 +1,46 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# next.js
+.next/
+out/
+next-env.d.ts
+
+# production
+build/
+dist/
+
+# testing
+coverage/
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+
+# environment — never commit real secrets
+.env
+.env.local
+.env*.local
+
+# editors / os
+.DS_Store
+*.pem
+*.tsbuildinfo
+
+# logs
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# local tooling (e.g. project-local Node install)
+.tools/
+
+# Claude Code: definițiile agenților se comit, permisiunile locale nu
+.claude/settings.local.json
+
+# vercel
+.vercel
+
+# eval output
+evals/results/
