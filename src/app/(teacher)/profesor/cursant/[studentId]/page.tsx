@@ -166,8 +166,14 @@ export default async function StudentDetail({
                       termen {relativeDayRo(a.dueAt)}
                     </span>
                   ) : null}
-                  <span className="ml-auto">
+                  <span className="ml-auto flex items-center gap-2">
                     <ChangeDue assignmentId={a.assignmentId} />
+                    <a
+                      href={`/preda/${a.assignmentId}`}
+                      className="inline-flex min-h-11 items-center rounded-lg bg-accent px-4 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
+                    >
+                      Predă
+                    </a>
                   </span>
                 </li>
               ))}

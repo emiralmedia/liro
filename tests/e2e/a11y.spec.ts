@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
+import { SEED } from "@/db/seed-ids";
 import { clearMagicLinks, signIn } from "./helpers";
 
 /**
@@ -33,6 +34,19 @@ test("pagina de acces nu are violări serioase", async ({ page }) => {
 test("dashboardul profesorului nu are violări serioase", async ({ page }) => {
   await signIn(page, "profesor@liro.test");
   await expect(page).toHaveURL(/\/profesor/);
+
+  const { blocking } = await scan(page);
+  expect(
+    blocking,
+    `Violări: ${blocking.map((v) => `${v.id} (${v.impact})`).join(", ")}`,
+  ).toEqual([]);
+});
+
+test("ecranul de predare nu are violări serioase", async ({ page }) => {
+  // Se proiectează în timpul lecției: contrastul și mărimile contează aici
+  // mai mult decât oriunde.
+  await signIn(page, "profesor@liro.test");
+  await page.goto(`/preda/${SEED.assignments.annaLesson1}`);
 
   const { blocking } = await scan(page);
   expect(
