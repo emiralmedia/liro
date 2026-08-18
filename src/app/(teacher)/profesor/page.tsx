@@ -122,15 +122,28 @@ export default async function TeacherToday() {
   const uniqueStudents = new Set(roster.map((r) => r.studentId)).size;
   const next = upcoming[0];
 
-  const today = new Date().toLocaleDateString("ro-RO", {
+  const now = new Date();
+  const today = now.toLocaleDateString("ro-RO", {
     weekday: "long",
     day: "numeric",
     month: "long",
   });
 
+  /**
+   * Salutul urmărește ceasul. Un „Bună dimineața" fix arată neglijent la lecția
+   * de seară — iar profesorul predă și seara.
+   */
+  const hour = now.getHours();
+  const greeting =
+    hour < 12 ? "Bună dimineața" : hour < 18 ? "Bună ziua" : "Bună seara";
+
   return (
     <>
-      <PageHeading eyebrow={today} title="Bună dimineața" subtitle="Ai tot ce contează pentru ziua de azi într-un singur loc." />
+      <PageHeading
+        eyebrow={today}
+        title={greeting}
+        subtitle="Ai tot ce contează pentru ziua de azi într-un singur loc."
+      />
 
       {next ? (
         <section className="surface-dark dot-grid relative mt-8 overflow-hidden rounded-[1.5rem] p-6 text-white shadow-lift sm:p-8">

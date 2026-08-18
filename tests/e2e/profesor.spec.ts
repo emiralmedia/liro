@@ -10,11 +10,15 @@ test.beforeEach(async () => {
   await clearMagicLinks();
 });
 
-test("profesorul intră și vede dashboardul „Astăzi”", async ({ page }) => {
+test("profesorul intră și vede dashboardul zilei", async ({ page }) => {
   await signIn(page, "profesor@liro.test");
 
   await expect(page).toHaveURL(/\/profesor/);
-  await expect(page.getByRole("heading", { name: "Astăzi", level: 1 })).toBeVisible();
+  // Salutul depinde de oră, deci nu fixăm textul — verificăm că titlul paginii
+  // este unul dintre cele trei, ca testul să nu cadă doar fiindcă a trecut prânzul.
+  await expect(
+    page.getByRole("heading", { level: 1, name: /Bună (dimineața|ziua|seara)/ }),
+  ).toBeVisible();
 
   // Toți cei trei cursanți alocați apar. Restrâns la lista de cursanți: un
   // cursant cu restanță apare și în secțiunea de mai sus, iar un selector
