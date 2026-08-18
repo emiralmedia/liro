@@ -32,7 +32,10 @@ async function sendMagicLink({ identifier, url }: { identifier: string; url: str
     // verificarea `isProduction` de mai sus.
     const sink = process.env.AUTH_DEV_LINK_FILE;
     if (sink) {
-      const { appendFile } = await import("node:fs/promises");
+      const { appendFile, mkdir } = await import("node:fs/promises");
+      const { dirname } = await import("node:path");
+      // Directorul e gitignorat, deci pe o mașină curată (CI) nu există încă.
+      await mkdir(dirname(sink), { recursive: true });
       await appendFile(sink, `${identifier}\t${url}\n`, "utf8");
     }
     return;
